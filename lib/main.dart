@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_equitation/Pages/bonus_page.dart';
 
 // Import all pages
 import 'package:flutter_app_equitation/Pages/home_page.dart';

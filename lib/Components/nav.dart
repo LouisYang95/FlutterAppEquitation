@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_equitation/Pages/bonus_page.dart';
 
 class DrawerWidget extends StatelessWidget {
   const DrawerWidget({super.key, this.db});
