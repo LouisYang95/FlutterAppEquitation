@@ -8,13 +8,16 @@ import 'Mongo.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await MongoDataBase.connect();
-  runApp(const MyApp());
+
+  var db = await MongoDataBase.connect();
+
+  runApp(MyApp(db: db));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, this.db});
 
+  final db;
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -25,7 +28,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: '🏠 Home Page'),
+      // Write elements of db
+      home: MyHomePage(title: '🏠 Home Page', db: db),
     );
   }
 }

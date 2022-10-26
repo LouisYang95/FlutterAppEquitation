@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app_equitation/Pages/bonus_page.dart';
 
 class DrawerWidget extends StatelessWidget {
-  const DrawerWidget({super.key});
+  const DrawerWidget({super.key, this.db});
+
+  final db;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +23,7 @@ class DrawerWidget extends StatelessWidget {
             onTap: () {
               Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const BonusPage(title: 'Bonus',)));
+                  MaterialPageRoute(builder: (context) => const BonusPage(title: 'Bonus')));
             },
           ),
         ],
