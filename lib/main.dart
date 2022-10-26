@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_equitation/Pages/bonus_page.dart';
+import 'package:flutter_app_equitation/Pages/class_page.dart';
 
 import 'Pages/home_page.dart';
 
@@ -24,7 +25,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      routes: {BonusPage.tag : (context)=>const BonusPage(title: 'Bonus')},
+      routes: {
+        BonusPage.tag: (context) => const BonusPage(title: 'Bonus'),
+        CreateClassPage.tag: (context) => const CreateClassPage(),
+      },
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -33,5 +37,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-
