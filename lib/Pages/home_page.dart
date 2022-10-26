@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../Components/nav.dart';
 
 
 class MyHomePage extends StatefulWidget {
@@ -18,6 +19,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
+      drawer: const DrawerWidget(),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
