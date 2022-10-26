@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: {
         BonusPage.tag: (context) => const BonusPage(title: 'Bonus'),
-        CreateClassPage.tag: (context) => const CreateClassPage(),
+        CreateClassPage.tag: (context) =>  CreateClassPage(db: db),
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,

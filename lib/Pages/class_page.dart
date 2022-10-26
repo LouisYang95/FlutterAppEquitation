@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../Components/nav.dart';
-import '../Mongo.dart';
 
 class Class {
   final String land;
@@ -16,7 +15,7 @@ class Class {
 class CreateClassPage extends StatefulWidget {
   static const tag = "class_page";
 
-  const CreateClassPage({super.key, this.db});
+  const CreateClassPage({super.key, required this.db});
 
   final db;
 
@@ -26,23 +25,39 @@ class CreateClassPage extends StatefulWidget {
 
 enum Land { career, carrousel }
 
+enum DurationT { half, hour }
+
 class CreateClassPageState extends State<CreateClassPage> {
+  String land = 'Career';
   final date = TextEditingController();
   final hour = TextEditingController();
-  final duration = TextEditingController();
-  final sport = TextEditingController();
+  String duration = '30 min';
 
   final _formKey = GlobalKey<FormState>();
 
+  /* Set default value for radio input */
   Land? _land = Land.career;
+  DurationT? _duration = DurationT.half;
 
+  /* set possible values for dropDownButton */
   List<String> menuItems = ['Training', 'Show Jumping', 'Endurance'];
 
-  String? dropdownValue = 'Type of the Class';
+/* set default value for the dropDownButton */
+  String dropdownValue = 'Type of the Class';
+
+/* Display button if data in the inputs is correct */
+  bool isValid = false;
 
   void createClass() {
-    Class(_land.toString(), date.text, hour.text, duration.text, sport.text);
-    
+    var c = Class(land, date.text, hour.text, duration, dropdownValue);
+    widget.db.collection('lessons').insertOne(<String, dynamic>{
+      'land': c.land,
+      'date': c.date,
+      'when': c.hour,
+      'duration': c.duration,
+      'type': c.sport,
+      'creation_date': DateTime.now().toString().substring(0, 16)
+    });
   }
 
   @override
@@ -55,6 +70,11 @@ class CreateClassPageState extends State<CreateClassPage> {
       body: Center(
         child: Form(
           key: _formKey,
+          onChanged: () {
+            setState(() {
+              isValid = _formKey.currentState!.validate();
+            });
+          },
           child: Column(
             children: [
               ListTile(
@@ -65,6 +85,7 @@ class CreateClassPageState extends State<CreateClassPage> {
                   onChanged: (Land? value) {
                     setState(() {
                       _land = value;
+                      land = 'Career';
                     });
                   },
                 ),
@@ -77,42 +98,50 @@ class CreateClassPageState extends State<CreateClassPage> {
                   onChanged: (Land? value) {
                     setState(() {
                       _land = value;
+                      land = 'Carrousel';
                     });
                   },
                 ),
               ),
-              TextField(
+              TextFormField(
                   controller: date,
                   decoration: const InputDecoration(
-                      icon: Icon(Icons.calendar_today), //icon of text field
-                      labelText: "Enter Date" //label text of field
-                      ),
-                  readOnly: true, // when true user cannot edit text
+                      icon: Icon(Icons.calendar_today),
+                      labelText: "Enter Date"),
+                  readOnly: true,
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return "Date required";
+                    }
+                    return null;
+                  },
                   onTap: () async {
                     DateTime? pickedDate = await showDatePicker(
                         context: context,
-                        initialDate: DateTime.now(), //get today's date
-                        firstDate: DateTime(
-                            2000), //DateTime.now() - not to allow to choose before today.
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2000),
                         lastDate: DateTime(2101));
 
                     if (pickedDate != null) {
-                      print(pickedDate);
                       String formattedDate =
                           DateFormat('dd-MM-yyyy').format(pickedDate);
                       setState(() {
                         date.text = formattedDate;
                       });
-                    } else {
-                      print("Date is not selected");
                     }
                   }),
               const Text('Hour'),
-              TextField(
+              TextFormField(
                   controller: hour,
                   decoration: const InputDecoration(
                       icon: Icon(Icons.timer), labelText: "Enter the Time"),
                   readOnly: true,
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return "Time required";
+                    }
+                    return null;
+                  },
                   onTap: () async {
                     TimeOfDay? pickedTime = await showTimePicker(
                       initialTime: TimeOfDay.now(),
@@ -120,59 +149,55 @@ class CreateClassPageState extends State<CreateClassPage> {
                     );
 
                     if (pickedTime != null) {
-                      print(pickedTime.format(context));
                       DateTime parsedTime = DateFormat.jm()
                           .parse(pickedTime.format(context).toString());
-                      print(parsedTime);
+
                       String formattedTime =
-                          DateFormat('HH:mm:ss').format(parsedTime);
-                      print(formattedTime);
+                          DateFormat('HH:mm').format(parsedTime);
 
                       setState(() {
                         hour.text = formattedTime;
                       });
-                    } else {
-                      print("Time is not selected");
                     }
                   }),
-              const Text('Duration'),
-              TextField(
-                  controller: hour,
-                  decoration: const InputDecoration(
-                      icon: Icon(Icons.timer), labelText: "Enter the Duration"),
-                  readOnly: true,
-                  onTap: () async {
-                    TimeOfDay? pickedTime = await showTimePicker(
-                      initialTime: TimeOfDay.now(),
-                      context: context,
-                    );
-
-                    if (pickedTime != null) {
-                      print(pickedTime.format(context));
-                      DateTime parsedTime = DateFormat.jm()
-                          .parse(pickedTime.format(context).toString());
-                      print(parsedTime);
-                      String formattedTime =
-                          DateFormat('HH:mm:ss').format(parsedTime);
-                      print(formattedTime);
-
-                      setState(() {
-                        hour.text = formattedTime;
-                      });
-                    } else {
-                      print("Duration is not selected");
-                    }
-                  }),
-              DropdownButton<String>(
+              ListTile(
+                title: const Text('30 min'),
+                leading: Radio(
+                  value: DurationT.half,
+                  groupValue: _duration,
+                  onChanged: (DurationT? value) {
+                    setState(() {
+                      _duration = value;
+                      duration = '30 min';
+                    });
+                  },
+                ),
+              ),
+              ListTile(
+                title: const Text('1 hour'),
+                leading: Radio(
+                  value: DurationT.hour,
+                  groupValue: _duration,
+                  onChanged: (DurationT? value) {
+                    setState(() {
+                      _duration = value;
+                      duration = '1 hour';
+                    });
+                  },
+                ),
+              ),
+              DropdownButtonFormField<String>(
                 dropdownColor: const Color.fromARGB(245, 215, 194, 239),
                 value: dropdownValue,
                 icon: const Icon(Icons.arrow_downward),
                 elevation: 16,
                 style: const TextStyle(color: Colors.deepPurple),
-                underline: Container(
-                  height: 2,
-                  color: Colors.deepPurpleAccent,
-                ),
+                validator: (String? value) {
+                  if (value == 'Type of the Class') {
+                    return "Type required";
+                  }
+                  return null;
+                },
                 onChanged: (String? newValue) {
                   setState(() {
                     dropdownValue = newValue!;
@@ -192,7 +217,7 @@ class CreateClassPageState extends State<CreateClassPage> {
               Container(
                   padding: const EdgeInsets.only(left: 150.0, top: 40.0),
                   child: ElevatedButton(
-                    onPressed: createClass,
+                    onPressed: isValid ? createClass : null,
                     child: const Text('Reserve'),
                   )),
             ],
