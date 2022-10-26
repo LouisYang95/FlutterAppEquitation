@@ -3,7 +3,12 @@ import 'package:flutter_app_equitation/Pages/bonus_page.dart';
 
 import 'Pages/home_page.dart';
 
-void main() {
+// import Mongo.dart file
+import 'Mongo.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await MongoDataBase.connect();
   runApp(const MyApp());
 }
 
