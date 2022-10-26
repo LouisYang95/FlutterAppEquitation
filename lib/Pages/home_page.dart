@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import '../Components/nav.dart';
 
-
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({super.key, required this.title, this.db});
 
   final String title;
+  final db;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
