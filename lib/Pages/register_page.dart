@@ -17,9 +17,9 @@ class _MyRegisterState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     saveUser() {
-      final String username = _usernameController.text;
-      final String password = _passwordController.text;
-      final String email = _emailController.text;
+      final String username = _usernameController.text.trim();
+      final String password = _passwordController.text.trim();
+      final String email = _emailController.text.trim();
 
       // If the form is valid, save the user in the database
       if (username != '' && password != '' && email != '') {
@@ -32,32 +32,58 @@ class _MyRegisterState extends State<RegisterPage> {
         RegExp passwordRegexp = RegExp(
           r'^(?=.*[0-9])(?=.{8,})');
         if (emailRegexp.hasMatch(email) && usernameRegexp.hasMatch(username) && passwordRegexp.hasMatch(password)) {
-          widget.db.collection('users').insertOne(<String, dynamic>{
-            'username': username,
-            'password': password,
-            'email': email,
-            "is_admin": false,
-          }).then((value) {
-            // Show a popup to confirm the registration
-            var popup = showDialog(
-                barrierDismissible: false,
-                context: context,
-                builder: (BuildContext context) {
-                  return const AlertDialog(
-                    title: Text(
-                        "Success", style: TextStyle(color: Colors.green)),
-                    content: Text("You have been registered"),
-                  );
+          // If user email already exist show an alert dialog and don't save the user
+          widget.db.collection('users').find({
+            'email': email
+          }).toList().then((value) {
+            if (value.length == 0) {
+              widget.db.collection('users').insertOne(<String, dynamic>{
+                'username': username,
+                'password': password,
+                'email': email,
+                "is_admin": false,
+                // Creation date = Date / Hour only
+                'creation_date': DateTime.now().toString().substring(0, 16)
+              }).then((value) {
+                // Show a popup to confirm the registration
+                var popup = showDialog(
+                    barrierDismissible: false,
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const AlertDialog(
+                        title: Text(
+                            "Success", style: TextStyle(color: Colors.green)),
+                        content: Text("You have been registered"),
+                      );
+                    });
+                Future.delayed(const Duration(seconds: 2), () {
+                  Navigator.of(context).pop();
+                  Navigator.pushNamed(context, '/login');
                 });
-            Future.delayed(const Duration(seconds: 2), () {
-              Navigator.of(context).pop();
-              Navigator.pushNamed(context, '/login');
-            });
-            // Clear the fields
-            _usernameController.clear();
-            _passwordController.clear();
-            _emailController.clear();
-            return popup;
+                // Clear the fields
+                _usernameController.clear();
+                _passwordController.clear();
+                _emailController.clear();
+                return popup;
+              });
+            } else {
+              // If user email already exist show an alert dialog and don't save the user
+              var popup = showDialog(
+                  barrierDismissible: false,
+                  context: context,
+                  builder: (BuildContext context) {
+                    return const AlertDialog(
+                      title: Text("Error", style: TextStyle(color: Colors.red)),
+                      content: Text("User already exists"),
+                    );
+                  });
+              Future.delayed(const Duration(seconds: 2), () {
+                Navigator.of(context).pop();
+              });
+              _emailController.clear();
+              _passwordController.clear();
+              return popup;
+            }
           });
         } else if (!emailRegexp.hasMatch(email)) {
           // If the email is not valid show a popup
