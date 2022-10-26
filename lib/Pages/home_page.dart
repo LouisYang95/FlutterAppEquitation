@@ -1,23 +1,26 @@
 import 'package:flutter/material.dart';
+import '../Components/nav.dart';
 
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  // Const homepage with title and db
+  MyHomePage({super.key, required this.title, this.db});
 
   final String title;
+  final db;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
+      drawer: DrawerWidget(db: widget.db),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
