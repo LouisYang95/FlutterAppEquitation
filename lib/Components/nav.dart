@@ -21,9 +21,7 @@ class DrawerWidget extends StatelessWidget {
           ListTile(
             title: Text('Bonus'),
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const BonusPage(title: 'Bonus')));
+              Navigator.pushNamed(context, '/bonus');
             },
           ),
         ],
