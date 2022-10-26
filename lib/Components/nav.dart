@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_app_equitation/Pages/bonus_page.dart';
+import 'package:flutter_app_equitation/Pages/profile_page.dart';
 
 class DrawerWidget extends StatelessWidget {
   const DrawerWidget({super.key});
@@ -10,18 +12,30 @@ class DrawerWidget extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          DrawerHeader(
-            child: Text('Navigation'),
+          const DrawerHeader(
             decoration: BoxDecoration(
               color: Colors.grey,
             ),
+            child: Text('Navigation'),
           ),
           ListTile(
             title: Text('Bonus'),
             onTap: () {
               Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const BonusPage(title: 'Bonus',)));
+                  MaterialPageRoute(
+                      builder: (context) => const BonusPage(
+                            title: 'Bonus',
+                          )));
+            },
+          ),
+          ListTile(
+            title: Text('Profil'),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: ((context) => const UserProfil())));
             },
           ),
         ],
