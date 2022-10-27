@@ -4,12 +4,11 @@ import '../Components/nav.dart';
 
 class Contest {
   final String name;
-  final String adress;
+  final String address;
   final String picture;
   final String date;
-  final List<String> horsemen;
 
-  Contest(this.name, this.adress, this.picture, this.date, this.horsemen);
+  Contest(this.name, this.address, this.picture, this.date);
 }
 
 class CreateContestPage extends StatefulWidget {
@@ -24,11 +23,10 @@ class CreateContestPage extends StatefulWidget {
 class CreateContestPageState extends State<CreateContestPage> {
   /* controllers here */
   final name = TextEditingController();
-  final adress = TextEditingController();
+  final address = TextEditingController();
   final picture = TextEditingController();
   final date = TextEditingController();
 
-  List<String> horsemen = [];
   final _formKey = GlobalKey<FormState>();
 
   /* set default value for the dropDownButton */
@@ -38,13 +36,12 @@ class CreateContestPageState extends State<CreateContestPage> {
   bool isValid = false;
 
   void createContest() {
-    var c = Contest(name.text, adress.text, picture.text, date.text, horsemen);
+    var c = Contest(name.text, address.text, picture.text, date.text);
     widget.db.collection('contests').insertOne(<String, dynamic>{
       'name': c.name,
-      'adress': c.adress,
+      'address': c.address,
       'picture': c.picture,
       'date': c.date,
-      'users': c.horsemen,
       'creation_date': DateTime.now().toString().substring(0, 16),
     });
     Navigator.pushNamed(context, '/');
@@ -84,13 +81,13 @@ class CreateContestPageState extends State<CreateContestPage> {
                     return null;
                   }),
               TextFormField(
-                  controller: adress,
+                  controller: address,
                   decoration: const InputDecoration(
                       icon: Icon(Icons.location_on),
-                      labelText: "Enter the adress of the contest"),
+                      labelText: "Enter the address of the contest"),
                   validator: (String? value) {
                     if (value == null || value.isEmpty) {
-                      return "Adress required";
+                      return "address required";
                     }
                     return null;
                   }),
