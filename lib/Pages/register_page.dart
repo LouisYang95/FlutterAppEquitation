@@ -41,7 +41,7 @@ class _MyRegisterState extends State<RegisterPage> {
           }).toList().then((value) {
             if (value.length == 0) {
               if (profile_picture == '') {
-                profile_picture = 'https://cdn-icons-png.flaticon.com/512/1160/1160040.png?w=360';
+                profile_picture = 'https://cdn.discordapp.com/attachments/888356230379212831/1035297732442738698/user.jpeg';
               }
               widget.db.collection('users').insertOne(<String, dynamic>{
                 'username': username,
@@ -63,6 +63,8 @@ class _MyRegisterState extends State<RegisterPage> {
                       );
                     });
                 Future.delayed(const Duration(seconds: 2), () {
+                  setState(() {
+                  });
                   Navigator.of(context).pop();
                   Navigator.pushNamed(context, '/login');
                 });
