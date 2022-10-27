@@ -224,10 +224,10 @@ class _UserProfilState extends State<UserProfil> {
     _nameField.text = myProfil[0].name;
     _emailField.text = myProfil[0].email;
     _passwordField.text = myProfil[0].password;
-    _agesField.text = myProfil[0].ages;
-    _phoneNumber.text = myProfil[0].phone;
-    _ffeField.text = myProfil[0].ffe;
-    _photoUrl.text = myProfil[0].photoUrl;
+    _agesField.text = myProfil[0].ages ?? '';
+    _phoneNumber.text = myProfil[0].phone ?? '';
+    _ffeField.text = myProfil[0].ffe ?? '';
+    _photoUrl.text = myProfil[0].photoUrl ?? '';
   }
 
   void updateToDatabase() async {
