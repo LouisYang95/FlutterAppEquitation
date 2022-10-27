@@ -15,6 +15,7 @@ class _MyRegisterState extends State<RegisterPage> {
   final _passwordController = TextEditingController();
   final _emailController = TextEditingController();
   final _profilePictureController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     saveUser() {
@@ -339,9 +340,8 @@ class _MyRegisterState extends State<RegisterPage> {
                         ],
                       ),
                     ),
-
-              ]
-              ),
+                  ]
+                ),
               ),
             ],
           ),
