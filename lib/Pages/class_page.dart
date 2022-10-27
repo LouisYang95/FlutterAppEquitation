@@ -58,6 +58,7 @@ class CreateClassPageState extends State<CreateClassPage> {
       'type': c.sport,
       'creation_date': DateTime.now().toString().substring(0, 16)
     });
+    Navigator.pushNamed(context, '/');
   }
 
   @override

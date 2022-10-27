@@ -94,18 +94,6 @@ class DrawerWidget extends StatelessWidget {
               }
             },
           ),
-          ListTile(
-            title: const Text('Class'),
-            onTap: () {
-              Navigator.pushNamed(context, '/class');
-            },
-          ),
-          ListTile(
-            title: const Text('Contest'),
-            onTap: () {
-              Navigator.pushNamed(context, '/contest');
-            },
-          ),
         ],
       ),
     );
