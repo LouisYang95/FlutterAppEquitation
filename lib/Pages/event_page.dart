@@ -20,6 +20,13 @@ class _MyEventPageState extends State<MyEventPage> {
 
   final _formKey = GlobalKey<FormState>();
 
+  void createClass() {
+    var c = Class(dropdownValue);
+    widget.db.collection('lessons').insertOne(<String, dynamic>{
+      
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
