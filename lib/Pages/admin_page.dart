@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_session_manager/flutter_session_manager.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
+import 'package:intl/intl.dart';
 
 
 
@@ -76,6 +77,12 @@ class _MyAdminState extends State<AdminPage> {
                           child: const Text('Yes'),
                           onPressed: () {
                             widget.db.collection('users').deleteOne(mongo.where.eq('_id', snapshot['_id']));
+                            widget.db.collection('lessons').deleteMany(mongo.where.eq('user', snapshot['_id']));
+                            widget.db.collection('parties').deleteMany(mongo.where.eq('user', snapshot['_id']));
+                            widget.db.collection('contests').deleteMany(mongo.where.eq('user', snapshot['_id']));
+                            widget.db.collection('contests_participations').deleteMany(mongo.where.eq('user_id', snapshot['_id']));
+                            widget.db.collection('parties_participations').deleteMany(mongo.where.eq('user_id', snapshot['_id']));
+                            widget.db.collection('lessons_participations').deleteMany(mongo.where.eq('user_id', snapshot['_id']));
                             Navigator.of(context).pop();
                           },
                         ),
