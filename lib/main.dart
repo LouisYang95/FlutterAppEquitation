@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_equitation/Pages/bonus_page.dart';
 import 'package:flutter_app_equitation/Pages/class_page.dart';
+import 'package:flutter_app_equitation/Pages/contest_page.dart';
 
 import 'Pages/home_page.dart';
 
@@ -27,7 +28,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: {
         BonusPage.tag: (context) => const BonusPage(title: 'Bonus'),
-        CreateClassPage.tag: (context) =>  CreateClassPage(db: db),
+        CreateClassPage.tag: (context) => CreateClassPage(db: db),
+        CreateContestPage.tag: (context) => CreateContestPage(db: db)
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,
