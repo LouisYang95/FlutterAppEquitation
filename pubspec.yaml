@@ -37,7 +37,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   mongo_dart: ^0.7.4+1
   url_launcher: ^6.1.6
-  
+  carousel_slider: ^4.1.1-nullsafety.0
+
 
   image_picker: 0.8.6
   flutter_session_manager: ^1.0.3

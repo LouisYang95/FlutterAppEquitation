@@ -10,7 +10,7 @@ import 'package:flutter_app_equitation/Pages/profile_page.dart';
 import 'package:flutter_app_equitation/Pages/forgot_pass_page.dart';
 import 'package:flutter_app_equitation/Pages/class_page.dart';
 import 'package:flutter_app_equitation/Pages/contest_page.dart';
-import 'package:flutter_session_manager/flutter_session_manager.dart';
+
 
 // import Mongo.dart file
 import 'Mongo.dart';
@@ -19,8 +19,6 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   var db = await MongoDataBase.connect();
-  // SessionManager().set('isLogged', true);
-  // print(SessionManager());
   runApp(MyApp(db: db));
 }
 
@@ -46,7 +44,8 @@ class MyApp extends StatelessWidget {
         '/profil': (context) => UserProfil(db: db),
       },
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.orange,
+        scaffoldBackgroundColor: Colors.white.withAlpha(12000),
       ),
     );
   }
