@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import 'package:url_launcher/url_launcher.dart';
 
-// import 'package:flutter_app_equitation/classses/class_users.dart';
+import 'package:flutter_app_equitation/classses/class_users.dart';
 
 class UserProfil extends StatefulWidget {
   static const tag = "user_profil";
@@ -22,12 +23,12 @@ class _UserProfilState extends State<UserProfil> {
   var _name = 'Nom';
   bool showInfo = false;
   bool isCompleted = false;
-  List users = [];
+  List myProfil = [];
 
   @override
   void initState() {
     super.initState();
-    // getUser();
+    getUser();
     if (_ffeField.text.isNotEmpty) {
       setState(() {
         isCompleted = true;
@@ -82,119 +83,106 @@ class _UserProfilState extends State<UserProfil> {
         });
   }
 
-  getAllUsers() async {
-    print(await widget.db.collection('users').find().toList());
-    // var user = await widget.db.collection('users').find().toList();
-    // print(user);
-    // return user;
+  getUser() async {
+    var user = await widget.db
+        .collection("users")
+        .findOne(mongo.where.eq('username', 'user2'));
+    print(user);
+    Users me = Users(
+      name: user['username'],
+      email: user['email'],
+      password: user['password'],
+    );
+    setState(() {
+      myProfil.add(me);
+      defineControllerUser();
+    });
+  }
+
+  defineControllerUser() {
+    _nameField.text = myProfil[0].name;
+    _emailField.text = myProfil[0].email;
+    _name = myProfil[0].name;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Container(
-        height: 100,
-        width: 100,
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          color: Colors.blue,
-        ),
-      ),
-      GestureDetector(
-        onTap: () {
-          changeName(_name, _nameField);
-          getAllUsers();
-        },
-        child: ListTile(
-          // leading: const Icon(Icons.person),
-          title: Center(
-              child: Row(
+        body: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(width: 10),
-              Text(_name),
-              const Icon(Icons.edit),
-            ],
-          )),
-          // trailing: Center(child: const Icon(Icons.edit)),
-        ),
-      ),
-      Form(
-          key: _formKey,
-          child: Center(
-              child: Column(
-            children: <Widget>[
-              SizedBox(
-                width: 300,
-                child: Column(children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: TextFormField(
-                      enabled: false,
-                      controller: _emailField,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
-                        ),
-                        labelText: 'Email',
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: GestureDetector(
-                      onTap: () {
-                        print('ok');
-                      },
-                      child: TextFormField(
-                        enabled: false,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
+          Container(
+            height: 100,
+            width: 100,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.blue,
+            ),
+          ),
+          GestureDetector(
+            onTap: () async {
+              changeName(_name, _nameField);
+              getUser();
+            },
+            child: ListTile(
+              title: Center(
+                  child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(width: 10),
+                  Text(_name),
+                  const Icon(Icons.edit),
+                ],
+              )),
+            ),
+          ),
+          Form(
+              key: _formKey,
+              child: Center(
+                  child: Column(
+                children: <Widget>[
+                  SizedBox(
+                    width: 300,
+                    child: Column(children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        // child: TextFormField(
+                        //   // onTap: defineNewValue(_emailField, _emailField),
+                        //   enabled: false,
+                        //   controller: _emailField,
+                        //   decoration: const InputDecoration(
+                        //     border: OutlineInputBorder(
+                        //       borderRadius:
+                        //           BorderRadius.all(Radius.circular(20)),
+                        //     ),
+                        //     labelText: 'Email',
+                        //   ),
+                        // ),
+                        child: GestureDetector(
+                          onTap: () async {
+                            changeName(_emailField, _emailField);
+                            getUser();
+                          },
+                          child: ListTile(
+                            title: Center(
+                                child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const SizedBox(width: 10),
+                                Text(_emailField.text),
+                                const Icon(Icons.edit),
+                              ],
+                            )),
                           ),
-                          labelText: 'Password',
                         ),
                       ),
-                    ),
-                  ),
-                ]),
-              ),
-              !showInfo
-                  ? GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          showInfo = !showInfo;
-                        });
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(Icons.info, color: Colors.orange),
-                          Text('show info'),
-                          Icon(Icons.arrow_downward),
-                        ],
-                      ))
-                  : GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          showInfo = !showInfo;
-                        });
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(Icons.info, color: Colors.orange),
-                          Text('hide info'),
-                          Icon(Icons.arrow_upward),
-                        ],
-                      )),
-              showInfo
-                  ? SizedBox(
-                      width: 300,
-                      child: Column(children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(10),
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: GestureDetector(
+                          onTap: () {
+                            print('ok');
+                          },
                           child: TextFormField(
                             enabled: false,
                             decoration: const InputDecoration(
@@ -202,53 +190,102 @@ class _UserProfilState extends State<UserProfil> {
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(20)),
                               ),
-                              labelText: 'ages',
+                              labelText: 'Password',
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: TextFormField(
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20)),
-                              ),
-                              labelText: 'Phone Number',
-                            ),
-                          ),
-                        ),
-                        !isCompleted
-                            ? Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    print('ok');
-                                  },
-                                  child: TextFormField(
-                                    decoration: const InputDecoration(
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20)),
-                                      ),
-                                      labelText: 'LINK TO YOUR FFE',
-                                    ),
+                      ),
+                    ]),
+                  ),
+                  !showInfo
+                      ? GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              showInfo = !showInfo;
+                            });
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Icon(Icons.info, color: Colors.orange),
+                              Text('show info'),
+                              Icon(Icons.arrow_downward),
+                            ],
+                          ))
+                      : GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              showInfo = !showInfo;
+                            });
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Icon(Icons.info, color: Colors.orange),
+                              Text('hide info'),
+                              Icon(Icons.arrow_upward),
+                            ],
+                          )),
+                  showInfo
+                      ? SizedBox(
+                          width: 300,
+                          child: Column(children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: TextFormField(
+                                enabled: false,
+                                decoration: const InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20)),
                                   ),
+                                  labelText: 'ages',
                                 ),
-                              )
-                            : Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    launchUrl(youtubeUrl);
-                                  },
-                                  child: Text('This is your FFE profil'),
-                                ))
-                      ]),
-                    )
-                  : Container(),
-            ],
-          )))
-    ]));
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: TextFormField(
+                                decoration: const InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20)),
+                                  ),
+                                  labelText: 'Phone Number',
+                                ),
+                              ),
+                            ),
+                            !isCompleted
+                                ? Padding(
+                                    padding: const EdgeInsets.all(10),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        print('ok');
+                                      },
+                                      child: TextFormField(
+                                        decoration: const InputDecoration(
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(20)),
+                                          ),
+                                          labelText: 'LINK TO YOUR FFE',
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                : Padding(
+                                    padding: const EdgeInsets.all(10),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        launchUrl(youtubeUrl);
+                                      },
+                                      child: Text('This is your FFE profil'),
+                                    ))
+                          ]),
+                        )
+                      : Container(),
+                ],
+              )))
+        ]));
   }
 }

@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: {
         '/': (context) => MyHomePage(title: '🏠 Home Page', db: db),
-        '/bonus': (context) => BonusPage(title:'Bonus Page'),
+        '/bonus': (context) => const BonusPage(title:'Bonus Page'),
         '/profil': (context) => UserProfil(db: db),
         // '/login': (context) => LoginPage(db: db),
         // '/register': (context) => RegisterPage(db: db),
