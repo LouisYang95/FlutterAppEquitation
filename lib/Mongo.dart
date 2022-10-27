@@ -11,7 +11,6 @@ class MongoDataBase {
     var status = db.serverStatus();
 
     inspect(status);
-
     // Return db to exploit it in the main.dart file (and then in our routes)
     return db;
   }

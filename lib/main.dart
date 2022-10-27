@@ -13,6 +13,7 @@ import 'package:flutter_app_equitation/Pages/forgot_pass_page.dart';
 import 'package:flutter_app_equitation/Pages/class_page.dart';
 import 'package:flutter_app_equitation/Pages/contest_page.dart';
 
+
 // import Mongo.dart file
 import 'Mongo.dart';
 
@@ -20,7 +21,6 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   var db = await MongoDataBase.connect();
-
   runApp(MyApp(db: db));
 }
 
@@ -43,8 +43,8 @@ class MyApp extends StatelessWidget {
         '/class': (context) => CreateClassPage(db: db),
         '/event': (context) => CreateEventPage(db: db),
         '/admin': (context) => AdminPage(db: db),
-        '/forgot_password' : (context) => ForgotPasswordPage(db: db),
-
+        '/forgot_password': (context) => ForgotPasswordPage(db: db),
+        '/profil': (context) => UserProfil(db: db),
       },
       theme: ThemeData(
         primarySwatch: Colors.orange,
