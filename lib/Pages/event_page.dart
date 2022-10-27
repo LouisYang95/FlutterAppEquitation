@@ -34,9 +34,10 @@ class _MyEventPageState extends State<MyEventPage> {
   final _formKey = GlobalKey<FormState>();
 
   void createClass() {
-    var c = Class(dropdownValue);
+    var c = Class(dropdownValue, date.text);
     widget.db.collection('parties').insertOne(<String, dynamic>{
-      'theme': c.theme
+      'theme': c.theme,
+      'date': c.date
       
     });
   }
