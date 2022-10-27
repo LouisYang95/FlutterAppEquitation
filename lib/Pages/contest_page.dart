@@ -13,7 +13,6 @@ class Contest {
 }
 
 class CreateContestPage extends StatefulWidget {
-  static const tag = "Contest_page";
 
   const CreateContestPage({super.key, required this.db});
 
