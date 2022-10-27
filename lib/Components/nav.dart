@@ -64,7 +64,13 @@ class DrawerWidget extends StatelessWidget {
               },
             ),
             ListTile(
-              title: Text('Event'),
+              title: Text('Party'),
+              onTap: () {
+                Navigator.pushNamed(context, '/event');
+              },
+            ),
+            ListTile(
+              title: Text('Events'),
               onTap: () {
                 Navigator.pushNamed(context, '/all_events');
               },
