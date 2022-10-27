@@ -49,6 +49,17 @@ class HorsePageState extends State<HorsePage> {
     }
   }
 
+
+  checkIfPart(horseId) async {
+    var horse = await widget.db.collection('horses').findOne(mongo.where.id(horseId));
+
+    if (await horse['state'] == null || await horse['state'] != 'part') {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
 becomePartOwner(horseId) async {
     var session = SessionManager();
     var userId = await session.get('id');
@@ -169,12 +180,34 @@ becomePartOwner(horseId) async {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceAround,
                                 children: [
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      becomeFullOwner(snapshot.data[index]['_id']);
-                                    },
-                                    child: const Text('Become Owner'),
-                                  ),
+                                  // ElevatedButton(
+                                  //   onPressed: () {
+                                  //     becomeFullOwner(snapshot.data[index]['_id']);
+                                  //   },
+                                  //   child: const Text('Become Owner'),
+                                  // ),
+                                  // FutureBuilder using checkIfPart to check if the horse is already part owned
+                                  FutureBuilder(
+                                      future: checkIfPart(
+                                          snapshot.data[index]['_id']),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot snapshot) {
+                                        if (snapshot.hasData) {
+                                          if (snapshot.data == false) {
+                                            return ElevatedButton(
+                                              onPressed: () {
+                                                becomePartOwner(
+                                                    snapshot.data[index]['_id']);
+                                              },
+                                              child: const Text('Become Owner'),
+                                            );
+                                          } else {
+                                            return Text('Already part owned');
+                                          }
+                                        } else {
+                                          return const CircularProgressIndicator();
+                                        }
+                                      }),
                                   ElevatedButton(
                                     onPressed: () {
                                       becomePartOwner(snapshot.data[index]['_id']);
