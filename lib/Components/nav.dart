@@ -11,16 +11,28 @@ class DrawerWidget extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          DrawerHeader(
-            child: Text('Navigation'),
+          const DrawerHeader(
             decoration: BoxDecoration(
               color: Colors.grey,
             ),
+            child: Text('Navigation'),
           ),
           ListTile(
-            title: Text('Bonus'),
+            title: const Text('Bonus'),
             onTap: () {
               Navigator.pushNamed(context, '/bonus');
+            },
+          ),
+          ListTile(
+            title: const Text('Class'),
+            onTap: () {
+              Navigator.pushNamed(context, '/class');
+            },
+          ),
+          ListTile(
+            title: const Text('Contest'),
+            onTap: () {
+              Navigator.pushNamed(context, '/contest');
             },
           ),
         ],
