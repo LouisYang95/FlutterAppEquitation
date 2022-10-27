@@ -82,8 +82,11 @@ class _MyHomePageState extends State<MyHomePage> {
         var diff = dayNow - dayLesson;
         //return user with diff <= 86400000
         if (diff <= 86400000) {
-          //add user to userDate
-          lessonDate.add(lesson);
+          var statusLesson = lesson['status'];
+          if (statusLesson == "accepted" || statusLesson == "pending") {
+            //add user to userDate
+            lessonDate.add(lesson);
+          }
         }
       }
       return lessons;
