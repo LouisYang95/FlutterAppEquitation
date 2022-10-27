@@ -14,7 +14,7 @@ class Event {
 class CreateEventPage extends StatefulWidget {
   static const tag = "event_page";
 
-  const CreateEventPage({super.key, required this.db});
+    const CreateEventPage({Key? key, this.db}) : super(key: key);
 
   final db;
 

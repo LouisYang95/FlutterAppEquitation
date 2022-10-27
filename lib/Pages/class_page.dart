@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../Components/nav.dart';
 
 class Class {
   final String land;
@@ -15,7 +14,7 @@ class Class {
 class CreateClassPage extends StatefulWidget {
   static const tag = "class_page";
 
-  const CreateClassPage({super.key, required this.db});
+  const CreateClassPage({Key? key, this.db}) : super(key: key);
 
   final db;
 
@@ -70,7 +69,6 @@ class CreateClassPageState extends State<CreateClassPage> {
       appBar: AppBar(
         title: const Text('Create Class'),
       ),
-      drawer: DrawerWidget(db: widget.db),
       body: Center(
         child: Form(
           key: _formKey,
