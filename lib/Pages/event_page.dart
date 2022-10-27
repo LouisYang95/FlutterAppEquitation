@@ -8,11 +8,15 @@ class MyEventPage extends StatefulWidget {
 }
 
 class _MyEventPageState extends State<MyEventPage> {
+
+  /* set possible values for dropDownButton */
+  List<String> menuItems = ['Aperitif', 'Meals'];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('event'),
+        title: const Text('Event'),
       ),
       body: Center(
         child: Column(
