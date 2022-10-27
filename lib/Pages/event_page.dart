@@ -24,6 +24,15 @@ class _MyEventPageState extends State<MyEventPage> {
         title: const Text('Event'),
       ),
       body: Center(
+        child: Form(
+          key: _formKey,
+          onChanged: () {
+            setState(() {
+              isValid = _formKey.currentState!.validate();
+            });
+          },
+
+        ),
         child: Column(
           children: [
             DropdownButtonFormField<String>(
@@ -57,5 +66,4 @@ class _MyEventPageState extends State<MyEventPage> {
       ),
     );
   }
-
 }
