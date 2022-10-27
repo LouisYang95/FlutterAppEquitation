@@ -68,119 +68,142 @@ class CreateEventPageState extends State<CreateEventPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Event'),
+        title: const Text('🐴 BabacHorse '),
       ),
-      body: Center(
-        child: Form(
-          key: _formKey,
-          onChanged: () {
-            setState(() {
-              isValid = _formKey.currentState!.validate();
-            });
-          },
+      body: Padding(
+        padding: const EdgeInsets.all(40.0),
+        child: Center(
           child: Column(
             children: [
-              ListTile(
-                title: const Text('aperitif'),
-                leading: Radio(
-                  value: Theme.aperitif,
-                  groupValue: _theme,
-                  onChanged: (Theme? value) {
-                    setState(() {
-                      _theme = value;
-                      theme = 'aperitif';
-                    });
-                  },
-                ),
-              ),
-              ListTile(
-                title: const Text('meals'),
-                leading: Radio(
-                  value: Theme.meals,
-                  groupValue: _theme,
-                  onChanged: (Theme? value) {
-                    setState(() {
-                      _theme = value;
-                      theme = 'meals';
-                    });
-                  },
-                ),
-              ),
-              TextFormField(
-                  controller: date,
-                  decoration: const InputDecoration(
-                      icon: Icon(Icons.calendar_today),
-                      labelText: "Enter Date"),
-                  readOnly: true,
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return "Date required";
-                    }
-                    return null;
-                  },
-                  onTap: () async {
-                    DateTime? pickedDate = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(2000),
-                        lastDate: DateTime(2101));
-
-                    if (pickedDate != null) {
-                      String formattedDate =
-                          DateFormat('dd-MM-yyyy').format(pickedDate);
-                      setState(() {
-                        date.text = formattedDate;
-                      });
-                    }
-                  }),
-              TextFormField(
-                controller: desc,
-                maxLines: 8,
-                decoration: const InputDecoration(
-                    icon: Icon(Icons.calendar_today), labelText: "Description"),
-                validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return "Description required";
-                  }
-                  return null;
-                },
-              ),
-              const Text('Hour'),
-              TextFormField(
-                  controller: hour,
-                  decoration: const InputDecoration(
-                      icon: Icon(Icons.timer), labelText: "Enter the Time"),
-                  readOnly: true,
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return "Time required";
-                    }
-                    return null;
-                  },
-                  onTap: () async {
-                    TimeOfDay? pickedTime = await showTimePicker(
-                      initialTime: TimeOfDay.now(),
-                      context: context,
-                    );
-
-                    if (pickedTime != null) {
-                      DateTime parsedTime = DateFormat.jm()
-                          .parse(pickedTime.format(context).toString());
-
-                      String formattedTime =
-                          DateFormat('HH:mm').format(parsedTime);
-
-                      setState(() {
-                        hour.text = formattedTime;
-                      });
-                    }
-                  }),
               Container(
-                  padding: const EdgeInsets.only(left: 150.0, top: 40.0),
-                  child: ElevatedButton(
-                    onPressed: isValid ? createClass : null,
-                    child: const Text('Reserve'),
-                  )),
+                padding: const EdgeInsets.all(10.0),
+                color: Color.fromRGBO(248,105,58, 1),
+                child: const Text("New Party", style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                    fontStyle: FontStyle.italic,
+                    fontSize: 36)),
+              ),
+              Form(
+                key: _formKey,
+                onChanged: () {
+                  setState(() {
+                    isValid = _formKey.currentState!.validate();
+                  });
+                },
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 80.0, top: 40.0, bottom: 10.0),
+                      child: Column(
+                        children: [
+                          ListTile(
+                            title: const Text('aperitif'),
+                            leading: Radio(
+                              value: Theme.aperitif,
+                              groupValue: _theme,
+                              onChanged: (Theme? value) {
+                                setState(() {
+                                  _theme = value;
+                                  theme = 'aperitif';
+                                });
+                              },
+                            ),
+                          ),
+                          ListTile(
+                            title: const Text('meals'),
+                            leading: Radio(
+                              value: Theme.meals,
+                              groupValue: _theme,
+                              onChanged: (Theme? value) {
+                                setState(() {
+                                  _theme = value;
+                                  theme = 'meals';
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    TextFormField(
+                        controller: date,
+                        decoration: const InputDecoration(
+                            icon: Icon(Icons.calendar_today),
+                            labelText: "Enter Date"),
+                        readOnly: true,
+                        validator: (String? value) {
+                          if (value == null || value.isEmpty) {
+                            return "Date required";
+                          }
+                          return null;
+                        },
+                        onTap: () async {
+                          DateTime? pickedDate = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(2101));
+
+                          if (pickedDate != null) {
+                            String formattedDate =
+                                DateFormat('dd-MM-yyyy').format(pickedDate);
+                            setState(() {
+                              date.text = formattedDate;
+                            });
+                          }
+                        }),
+                    TextFormField(
+                      controller: desc,
+                      maxLines: 5,
+                      decoration: const InputDecoration(
+                          icon: Icon(Icons.calendar_today), labelText: "Description"),
+                      validator: (String? value) {
+                        if (value == null || value.isEmpty) {
+                          return "Description required";
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 20.0),
+                    TextFormField(
+                        controller: hour,
+                        decoration: const InputDecoration(
+                            icon: Icon(Icons.timer), labelText: "Enter the Time"),
+                        readOnly: true,
+                        validator: (String? value) {
+                          if (value == null || value.isEmpty) {
+                            return "Time required";
+                          }
+                          return null;
+                        },
+                        onTap: () async {
+                          TimeOfDay? pickedTime = await showTimePicker(
+                            initialTime: TimeOfDay.now(),
+                            context: context,
+                          );
+
+                          if (pickedTime != null) {
+                            DateTime parsedTime = DateFormat.jm()
+                                .parse(pickedTime.format(context).toString());
+
+                            String formattedTime =
+                                DateFormat('HH:mm').format(parsedTime);
+
+                            setState(() {
+                              hour.text = formattedTime;
+                            });
+                          }
+                        }),
+                    Container(
+                        padding: const EdgeInsets.only(top: 40.0),
+                        child: ElevatedButton(
+                          onPressed: isValid ? createClass : null,
+                          child: const Text('Reserve'),
+                        )),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
