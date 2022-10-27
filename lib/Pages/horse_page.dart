@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import '../Components/nav.dart';
@@ -22,31 +20,7 @@ class HorsePageState extends State<HorsePage> {
     return horses;
   }
 
-  getList(data) {
-    return List.generate(data.length, (index) {
-      return Center(
-        child: Column(
-          children: [
-            Text(data[index]['photo']),
-            Text(data[index]['name']),
-            Row(
-              children: [
-                Text(data[index]['genre']),
-                Text(data[index]['age']),
-              ],
-            ),
-            Row(
-              children: [
-                Text(data[index]['breed']),
-                Text(data[index]['speciality']),
-              ],
-            ),
-            Text(data[index]['description'])
-            ],
-        ),
-      );
-    });
-  }
+  getList(data) {}
 
   @override
   Widget build(BuildContext context) {
@@ -56,24 +30,45 @@ class HorsePageState extends State<HorsePage> {
         ),
         drawer: DrawerWidget(db: widget.db),
         body: Center(
-            child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            FutureBuilder(
-                future: getAllHorsesFree(),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.hasData) {
-                    return GridView.count(
-                      crossAxisCount: 3,
-                      children: [getList(snapshot.data)],
-                    );
-                  } else {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                }),
-          ],
-        )));
+          child: FutureBuilder(
+              future: getAllHorsesFree(),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                      itemCount: snapshot.data.length,
+                      itemBuilder: ((context, int index) {
+                        return Center(
+                          child: Container(child: Column(
+                            children: [
+                              Center(
+                                child: Image.network(
+                                    snapshot.data[index]['photo']),
+                              ),
+                              Text(snapshot.data[index]['name']),
+                              Row(
+                                children: [
+                                  Text(snapshot.data[index]['genre']),
+                                  Text(snapshot.data[index]['age'].toString()),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text(snapshot.data[index]['breed']),
+                                  Text(snapshot.data[index]['speciality']
+                                      .toString()),
+                                ],
+                              ),
+                              Text(snapshot.data[index]['description'])
+                            ],
+                          ),
+                        ));
+                      }));
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              }),
+        ));
   }
 }
