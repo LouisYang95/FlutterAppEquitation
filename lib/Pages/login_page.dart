@@ -149,7 +149,9 @@ class _MyLoginState extends State<LoginPage> {
                                   style: ButtonStyle(),
                                 ),
                                 TextButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.pushNamed(context, '/forgot_password');
+                                    },
                                     child: Text(
                                       'Forgot Password',
                                       style: TextStyle(
