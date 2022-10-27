@@ -15,6 +15,8 @@ class _MyEventPageState extends State<MyEventPage> {
   /* set default value for the dropDownButton */
   String dropdownValue = 'Type of the Class';
 
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
