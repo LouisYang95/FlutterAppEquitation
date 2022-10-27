@@ -17,9 +17,17 @@ class AllEventsPage extends StatefulWidget {
 class AllEventsPageState extends State<AllEventsPage> {
   final _whatToBringController = TextEditingController();
   // Get all lessons
+  List lessonDisplay = [];
 
   getAllLessons() async {
     var lessons = await widget.db.collection('lessons').find().toList();
+    for (var lesson in lessons) {
+      var statusLesson = lesson['status'];
+      if (statusLesson == "accepted" || statusLesson == "pending") {
+        //add user to userDate
+        lessonDisplay.add(lesson);
+      }
+    }
     return lessons;
   }
 
@@ -228,15 +236,15 @@ class AllEventsPageState extends State<AllEventsPage> {
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.hasData) {
                     return ListView.builder(
-                      itemCount: snapshot.data.length,
+                      itemCount: lessonDisplay.length,
                       itemBuilder: (BuildContext context, int index)
                     {
                       return ListTile(
-                        title: Text(snapshot.data[index]['land']),
-                        subtitle: Text("Date : ${snapshot.data[index]['date']}, Hour : ${snapshot.data[index]['when']}", style: const TextStyle(color: Colors.grey)),
+                        title: Text(lessonDisplay[index]['land']),
+                        subtitle: Text("Date : ${lessonDisplay[index]['date']}, Hour : ${lessonDisplay[index]['when']}", style: const TextStyle(color: Colors.grey)),
                         trailing: ElevatedButton(
                           onPressed: () {
-                              saveParticipation(snapshot.data[index]['_id'], 'lesson');
+                              saveParticipation(lessonDisplay[index]['_id'], 'lesson');
                           },
                           child: const Text('Participate'),
                         ),
