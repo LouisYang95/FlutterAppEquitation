@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_app_equitation/Pages/bonus_page.dart';
+import 'package:flutter_app_equitation/Pages/class_page.dart';
+
+
 // Import all pages
 import 'package:flutter_app_equitation/Pages/home_page.dart';
 import 'package:flutter_app_equitation/Pages/login_page.dart';
@@ -30,6 +34,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       routes: {
+
         '/': (context) => MyHomePage(title: '🏠 Home Page', db: db),
         '/bonus': (context) => BonusPage(title:'Bonus Page'),
         '/login': (context) => LoginPage(db: db),
@@ -43,5 +48,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-
