@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import '../Components/nav.dart';
-// import "../Components/log_manager.dart";
 import 'package:carousel_slider/carousel_slider.dart';
-// import 'package:flutter_session_manager/flutter_session_manager.dart';
+import "../Components/log_manager.dart";
+
 
 class MyHomePage extends StatefulWidget {
   // Const homepage with title and db
@@ -11,6 +11,7 @@ class MyHomePage extends StatefulWidget {
 
   final String title;
   final db;
+
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -30,6 +31,7 @@ class _MyHomePageState extends State<MyHomePage> {
   ];
 
   @override
+
   Widget build(BuildContext context) {
 
     List userDate = [];
@@ -113,9 +115,10 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
-        // actions: [
-        //   LogManager(db: widget.db),
-        // ]
+        // Make me a logout button if user is logged and a login/register button if he's not
+        actions: [
+          LogManager(db: widget.db),
+        ]
       ),
       drawer: DrawerWidget(),
       body: Center(
