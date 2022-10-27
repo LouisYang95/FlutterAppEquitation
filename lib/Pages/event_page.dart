@@ -21,8 +21,6 @@ class _MyEventPageState extends State<MyEventPage> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const <Widget>[
-          ],
         ),
       ),
     );
