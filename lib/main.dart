@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_equitation/Pages/event_page.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
 
 // Import all pages
@@ -8,7 +7,7 @@ import 'package:flutter_app_equitation/Pages/horse_page.dart';
 import 'package:flutter_app_equitation/Pages/login_page.dart';
 import 'package:flutter_app_equitation/Pages/register_page.dart';
 import 'package:flutter_app_equitation/Pages/bonus_page.dart';
-
+import 'package:flutter_app_equitation/Pages/event_page.dart';
 import 'package:flutter_app_equitation/Pages/admin_page.dart';
 import 'package:flutter_app_equitation/Pages/profile_page.dart';
 import 'package:flutter_app_equitation/Pages/forgot_pass_page.dart';
