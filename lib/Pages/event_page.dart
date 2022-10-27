@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_equitation/Mongo.dart';
 
+
+class Class {
+  final String theme;
+
+
+  Class(this.theme);
+}
+
 class MyEventPage extends StatefulWidget {
   static const String tag = "event";
 
