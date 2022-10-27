@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
         '/bonus': (context) => BonusPage(title: 'Bonus Page'),
         '/login': (context) => LoginPage(db: db),
         '/register': (context) => RegisterPage(db: db),
-        '/constest': (context) => CreateContestPage(db: db),
+        '/contest': (context) => CreateContestPage(db: db),
         '/class': (context) => CreateClassPage(db: db),
         '/admin': (context) => AdminPage(db: db),
         '/forgot_password' : (context) => ForgotPasswordPage(db: db),

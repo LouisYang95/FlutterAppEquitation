@@ -57,6 +57,7 @@ class CreateClassPageState extends State<CreateClassPage> {
       'when': c.hour,
       'duration': c.duration,
       'type': c.sport,
+      'pending': true,
       'creation_date': DateTime.now().millisecondsSinceEpoch,
       'creation_real_date': formattedDate
     });

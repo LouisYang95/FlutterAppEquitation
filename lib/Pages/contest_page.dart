@@ -13,7 +13,6 @@ class Contest {
 }
 
 class CreateContestPage extends StatefulWidget {
-
   const CreateContestPage({super.key, required this.db});
 
   final db;
@@ -29,7 +28,7 @@ class CreateContestPageState extends State<CreateContestPage> {
   final picture = TextEditingController();
   final date = TextEditingController();
 
-  late List<String> horsemen;
+  List<String> horsemen = [];
   final _formKey = GlobalKey<FormState>();
 
   /* set default value for the dropDownButton */
@@ -47,15 +46,14 @@ class CreateContestPageState extends State<CreateContestPage> {
       'date': c.date,
       'users': c.horsemen,
       'creation_date': DateTime.now().toString().substring(0, 16),
-      'pending': true
     });
+    Navigator.pushNamed(context, '/');
   }
 
   getAllUsers() async {
     var users = await widget.db.collection('users').find().toList();
     return users;
   }
-
 
   @override
   Widget build(BuildContext context) {
