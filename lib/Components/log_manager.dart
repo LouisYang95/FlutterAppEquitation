@@ -6,25 +6,23 @@ class LogManager extends StatefulWidget {
 
   final db;
 
+
   @override
   _LogManagerState createState() => _LogManagerState();
 }
 
 class _LogManagerState extends State<LogManager> {
+
   Future<bool> isLogged() async {
+
     var isLogged = await SessionManager().get('isLogged');
-    if (isLogged == null || isLogged == true) {
-      return true;
-    } else {
+    if (isLogged == null || isLogged == false) {
       return false;
+    } else {
+      return true;
     }
   }
 
-  // Use session.get('isLogged').then((value)
-  // to check if user is logged or not
-  // Use session.get('id').then((value)
-  // to get the id of the user
-  // Get the value of the session isLogged then stock it in a variable
   @override
   Widget build(BuildContext context) {
     var session = SessionManager();

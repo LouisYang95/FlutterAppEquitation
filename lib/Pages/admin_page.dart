@@ -2,6 +2,9 @@
 
 import 'package:flutter/material.dart';
 
+import 'package:flutter_session_manager/flutter_session_manager.dart';
+import 'package:mongo_dart/mongo_dart.dart' as mongo;
+
 
 
 class AdminPage extends StatefulWidget {
@@ -48,13 +51,56 @@ class _MyAdminState extends State<AdminPage> {
     return contests;
   }
 
+  getAllOwners() async {
+    var owners = await widget.db.collection('owners').find().toList();
+    return owners;
+  }
+
+
+  deleteUserButton(snapshot) async {
+    // If user logged in is not admin, don't display delete button
+    print(await SessionManager().get('isAdmin'));
+    print(await SessionManager().get('id'));
+      if (await SessionManager().get('isAdmin') == true && await SessionManager().get('isLogged') == true && snapshot['is_admin'] == false) {
+        return IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: () {
+             // Make a verification dialog
+              showDialog<void>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Delete user'),
+                      content: const Text('Are you sure you want to delete this user ?'),
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Text('Yes'),
+                          onPressed: () {
+                            widget.db.collection('users').deleteOne(mongo.where.eq('_id', snapshot['_id']));
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        TextButton(
+                          child: const Text('No'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  });
+            });
+      } else {
+        return Container();
+      }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         // Create a list of tabs
         child: DefaultTabController(
-          length: 5,
+          length: 6,
           child: Scaffold(
             appBar: AppBar(
               bottom: const TabBar(
@@ -64,6 +110,7 @@ class _MyAdminState extends State<AdminPage> {
                   Tab(text: 'Parties'),
                   Tab(text: 'Horses'),
                   Tab(text: 'Contests'),
+                  Tab(text: 'Owners'),
                 ],
               ),
               title: const Text('Admin Page'),
@@ -96,42 +143,15 @@ class _MyAdminState extends State<AdminPage> {
                                           Navigator.of(context).pop();
                                         },
                                       ),
-                                      // Text button to delete the user with a confirmation dialog
-                                      TextButton(
-                                        child: Text('Delete'),
-                                        onPressed: () {
-                                          showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return AlertDialog(
-                                                title: Text('Delete user'),
-                                                content: Text('Are you sure you want to delete ${snapshot.data[index]['username']}?'),
-                                                actions: [
-                                                  TextButton(
-                                                    child: Text('Close'),
-                                                    onPressed: () {
-                                                      Navigator.of(context).pop();
-                                                    },
-                                                  ),
-                                                  TextButton(
-                                                    child: Text('Delete'),
-                                                    onPressed: () {
-                                                      // Find the user in the db without using "where"
-                                                      widget.db.collection('users').findOne({'_id': snapshot.data[index]['_id']}).then((value) {
-                                                        // Delete the user
-                                                        widget.db.collection('users').remove(value);
-
-                                                        // Set state to refresh the list
-                                                        setState(() {});
-                                                        Navigator.of(context).pop();
-                                                      });
-                                                      Navigator.of(context).pop();
-                                                    },
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          );
+                                      // Text button to delete the user with a confirmation dialog using the delete button function in form builder
+                                      FutureBuilder(
+                                        future: deleteUserButton(snapshot.data[index]),
+                                        builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                          if (snapshot.hasData) {
+                                            return snapshot.data;
+                                          } else {
+                                            return Container();
+                                          }
                                         },
                                       ),
                                     ],
@@ -217,6 +237,28 @@ class _MyAdminState extends State<AdminPage> {
                 // Create a list of contests
                 FutureBuilder(
                   future: getAllContests(),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return ListTile(
+                            title: Text(snapshot.data[index]['name']),
+                            subtitle: Text(snapshot.data[index]['description']),
+                          );
+                        },
+                      );
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  },
+                ),
+                // Create a list of owners
+                FutureBuilder(
+                  future: getAllOwners(),
+
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     if (snapshot.hasData) {
                       return ListView.builder(
