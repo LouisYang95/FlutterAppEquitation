@@ -4,9 +4,10 @@ import 'package:flutter_app_equitation/Mongo.dart';
 
 class Class {
   final String theme;
+  final String date;
 
 
-  Class(this.theme);
+  Class(this.theme, this.date);
 }
 
 class MyEventPage extends StatefulWidget {
