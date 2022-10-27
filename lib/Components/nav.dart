@@ -39,7 +39,7 @@ class DrawerWidget extends StatelessWidget {
           ListTile(
             title: const Text('Profile'),
             onTap: () {
-              Navigator.pushNamed(context, '/profile');
+              Navigator.pushNamed(context, '/profil');
             },
           ),
           ListTile(

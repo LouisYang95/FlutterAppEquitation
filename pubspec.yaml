@@ -36,9 +36,11 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   mongo_dart: ^0.7.4+1
+  url_launcher: ^6.1.6
+  carousel_slider: ^4.1.1-nullsafety.0
+
   image_picker: 0.8.6
   flutter_session_manager: ^1.0.3
-
   intl: ^0.17.0
 
 
@@ -52,7 +54,6 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
-
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

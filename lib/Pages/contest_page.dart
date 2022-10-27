@@ -42,7 +42,7 @@ class CreateContestPageState extends State<CreateContestPage> {
       'address': c.address,
       'picture': c.picture,
       'date': c.date,
-      'creation_date': DateTime.now().toString().substring(0, 16),
+      'creation_date': DateTime.now().millisecondsSinceEpoch,
     });
     Navigator.pushNamed(context, '/');
   }

@@ -59,6 +59,8 @@ class _MyAdminState extends State<AdminPage> {
 
   deleteUserButton(snapshot) async {
     // If user logged in is not admin, don't display delete button
+    print(await SessionManager().get('isAdmin'));
+    print(await SessionManager().get('id'));
       if (await SessionManager().get('isAdmin') == true && await SessionManager().get('isLogged') == true && snapshot['is_admin'] == false) {
         return IconButton(
             icon: const Icon(Icons.delete),
