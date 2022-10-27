@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_equitation/Mongo.dart';
 
 class MyEventPage extends StatefulWidget {
   static const String tag = "event";
+
+  final db;
 
   @override
   State<MyEventPage> createState() => _MyEventPageState();
