@@ -15,6 +15,7 @@ class AllEventsPage extends StatefulWidget {
 }
 
 class AllEventsPageState extends State<AllEventsPage> {
+  final _whatToBringController = TextEditingController();
   // Get all lessons
 
   getAllLessons() async {
@@ -38,13 +39,11 @@ class AllEventsPageState extends State<AllEventsPage> {
 
   Future<void> saveParticipation(eventId,String type) async {
     var id = await SessionManager().get('id');
-    var objectId = mongo.ObjectId.fromHexString(id);
-    var user = await widget.db.collection('users').findOne(mongo.where.eq('_id', objectId));
-
-
 
     // If user, save participation, else redirect to login page
-    if (user != null) {
+    if (id != '') {
+      var objectId = mongo.ObjectId.fromHexString(id);
+      var user = await widget.db.collection('users').findOne(mongo.where.eq('_id', objectId));
       if (type == 'lesson') {
         // Check if lesson already exist in lesson_participations checking combo of user_id and lesson_id
         var lessonParticipation = await widget.db.collection('lessons_participations').findOne(mongo.where.eq('user_id', objectId).and(mongo.where.eq('lesson_id', eventId)));
@@ -94,12 +93,44 @@ class AllEventsPageState extends State<AllEventsPage> {
         var partyParticipation = await widget.db.collection('parties_participations').findOne(mongo.where.eq('user_id', objectId).and(mongo.where.eq('party_id', eventId)));
 
         if (partyParticipation == null) {
-          widget.db.collection('parties_participations').insertOne(
-              <String, dynamic>{
-                'user_id': user['_id'],
-                'party_id': eventId,
-                'adhesion_date': DateTime.now().toString().substring(0, 16)
+          // Open a dialog to ask to the user what he wants to bring to the party (text field) to save it in the db
+          await showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text("What do you want to bring to the party?"),
+                  content: TextField(
+                    controller: _whatToBringController,
+                    decoration: const InputDecoration(
+                      hintText: "What do you want to bring to the party?",
+                    ),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      child: const Text("Cancel"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    TextButton(
+                      child: const Text("Save"),
+                      onPressed: () {
+                        widget.db.collection('parties_participations').insertOne(
+                            <String, dynamic>{
+                              'user_id': user['_id'],
+                              'party_id': eventId,
+                              'what_to_bring': _whatToBringController.text,
+                              'adhesion_date': DateTime.now().toString().substring(0, 16)
+                            });
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
               });
+
+
           var popup = showDialog(
               barrierDismissible: false,
               context: context,
@@ -202,7 +233,7 @@ class AllEventsPageState extends State<AllEventsPage> {
                     {
                       return ListTile(
                         title: Text(snapshot.data[index]['land']),
-                        subtitle: Text("Date : ${snapshot.data[index]['date']}, Hour : ${snapshot.data[index]['when']}", style: TextStyle(color: Colors.grey)),
+                        subtitle: Text("Date : ${snapshot.data[index]['date']}, Hour : ${snapshot.data[index]['when']}", style: const TextStyle(color: Colors.grey)),
                         trailing: ElevatedButton(
                           onPressed: () {
                               saveParticipation(snapshot.data[index]['_id'], 'lesson');
@@ -228,7 +259,7 @@ class AllEventsPageState extends State<AllEventsPage> {
                       itemBuilder: (BuildContext context, int index) {
                         return ListTile(
                           title: Text(snapshot.data[index]['theme']),
-                          subtitle: Text("Date : ${snapshot.data[index]['date']}, Hour : ${snapshot.data[index]['when']}", style: TextStyle(color: Colors.grey)),
+                          subtitle: Text("Date : ${snapshot.data[index]['date']}, Hour : ${snapshot.data[index]['when']}", style: const TextStyle(color: Colors.grey)),
                           trailing: ElevatedButton(
                             onPressed: () {
                               saveParticipation(snapshot.data[index]['_id'], 'party');
@@ -258,7 +289,7 @@ class AllEventsPageState extends State<AllEventsPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(snapshot.data[index]['address']),
-                              Text("Date : ${snapshot.data[index]['date']}", style: TextStyle(color: Colors.grey)),
+                              Text("Date : ${snapshot.data[index]['date']}", style: const TextStyle(color: Colors.grey)),
                             ],
                           ),
                           trailing: ElevatedButton(
