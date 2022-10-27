@@ -127,20 +127,28 @@ class _MyHomePageState extends State<MyHomePage> {
           child:Column(
             children: [
               const Padding(
-                padding: EdgeInsets.all(20.0),
+                //padding bottom
+                padding: EdgeInsets.only(top: 20,bottom: 40),
                 child: Text(
                   "News of the day : ",
-                  style: TextStyle(fontSize: 25.0, decoration: TextDecoration.underline),
+                  style: TextStyle(
+                    fontSize: 25.0,
+                    fontWeight: FontWeight.w700,
+                    decoration: TextDecoration.underline,
+                    color: Color.fromRGBO(248,105,58, 1),
+                  ),
                 ),
               ),
 
               //Users
-              const Padding(
-                padding: EdgeInsets.all(1.0),
-                child: Text(
-                  "Rider : ",
-                  style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold),
-                ),
+              Container(
+                padding: const EdgeInsets.all(10.0),
+                color: Color.fromRGBO(248,105,58, 1),
+                child: const Text("New Riders", style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                    fontStyle: FontStyle.italic,
+                    fontSize: 30)),
               ),
               FutureBuilder(
                 future: getAllUsers(),
@@ -148,7 +156,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   if (snapshot.hasData) {
                     return CarouselSlider(
                       options: CarouselOptions(
-                        height: 310.0,
+                        height: 270.0,
                         autoPlay: (userDate.length < 2 ? false : true),
                         autoPlayInterval: const Duration(seconds: 3),
                         autoPlayAnimationDuration: const Duration(milliseconds: 800),
@@ -172,11 +180,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                 scrollDirection: Axis.vertical,
                                 child: Column(
                                   children: [
-                                    Image.network(imgList[0]),
+                                    Image.network(user['photo']),
                                     const SizedBox(height: 10.0),
-                                    const Text("New Rider !", style: const TextStyle(fontSize: 20.0, color: Colors.black, fontWeight: FontWeight.bold)),
-                                    const SizedBox(height: 10.0),
-                                    Text(user['username'], style: const TextStyle(fontSize: 16.0, color: Colors.black, decoration: TextDecoration.underline)),
+                                    Text(user['username'], style: const TextStyle(fontSize: 20.0, color: Colors.black, fontWeight: FontWeight.bold)),
                                   ],
                                 ),
                               ),
@@ -188,19 +194,21 @@ class _MyHomePageState extends State<MyHomePage> {
                     );
                   } else {
                     return const Center(
-                      child: CircularProgressIndicator(),
+                      child: Text("No new rider"),
                     );
                   }
                 },
               ),
 
               //Contests
-              const Padding(
-                padding: EdgeInsets.all(1.0),
-                child: Text(
-                  "Contests : ",
-                  style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold),
-                ),
+              Container(
+                padding: const EdgeInsets.all(10.0),
+                color: Color.fromRGBO(248,105,58, 1),
+                child: const Text("New Contests", style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                    fontStyle: FontStyle.italic,
+                    fontSize: 30)),
               ),
               FutureBuilder(
                 future: getAllContests(),
@@ -208,7 +216,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   if (snapshot.hasData) {
                     return CarouselSlider(
                       options: CarouselOptions(
-                        height: 310.0,
+                        height: 320.0,
                         autoPlay: (contestDate.length < 2 ? false : true),
                         autoPlayInterval: const Duration(seconds: 3),
                         autoPlayAnimationDuration: const Duration(milliseconds: 800),
@@ -232,11 +240,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                 scrollDirection: Axis.vertical,
                                 child: Column(
                                   children: [
-                                    Image.network(imgList[1]),
+                                    Image.network(user['photo']),
                                     const SizedBox(height: 10.0),
-                                    const Text("New Contest !", style: const TextStyle(fontSize: 20.0, color: Colors.black, fontWeight: FontWeight.bold)),
+                                    Text(user['name'], style: const TextStyle(fontSize: 20.0, color: Colors.black, fontWeight: FontWeight.bold)),
                                     const SizedBox(height: 10.0),
-                                    Text(user['name'], style: const TextStyle(fontSize: 16.0, color: Colors.black, decoration: TextDecoration.underline)),
+                                    const Text("Address :", style: const TextStyle(fontSize: 16.0, color: Colors.black, decoration: TextDecoration.underline)),
+                                    Text(user['address'], style: const TextStyle(fontSize: 16.0)),
+
                                   ],
                                 ),
                               ),
@@ -248,19 +258,21 @@ class _MyHomePageState extends State<MyHomePage> {
                     );
                   } else {
                     return const Center(
-                      child: CircularProgressIndicator(),
+                      child: Text("No new contest"),
                     );
                   }
                 },
               ),
 
               //Lessons
-              const Padding(
-                padding: EdgeInsets.all(1.0),
-                child: Text(
-                  "Lessons : ",
-                  style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold),
-                ),
+              Container(
+                padding: const EdgeInsets.all(10.0),
+                color: Color.fromRGBO(248,105,58, 1),
+                child: const Text("New Lessons", style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                    fontStyle: FontStyle.italic,
+                    fontSize: 30)),
               ),
               FutureBuilder(
                 future: getAllLessons(),
@@ -268,7 +280,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   if (snapshot.hasData) {
                     return CarouselSlider(
                       options: CarouselOptions(
-                        height: 310.0,
+                        height: 290.0,
                         autoPlay: (lessonDate.length < 2 ? false : true),
                         autoPlayInterval: const Duration(seconds: 3),
                         autoPlayAnimationDuration: const Duration(milliseconds: 800),
@@ -292,11 +304,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                 scrollDirection: Axis.vertical,
                                 child: Column(
                                   children: [
-                                    Image.network(imgList[2]),
+                                    (user['type'] == "Endurance" ? Image.asset("assets/Endurance.jpeg") : user['type'] == "Show_Jumping" ? Image.asset("assets/Saut.jpeg") : Image.asset("assets/dressage.jpeg")),
                                     const SizedBox(height: 10.0),
-                                    const Text("New Lesson !", style: const TextStyle(fontSize: 20.0, color: Colors.black, fontWeight: FontWeight.bold)),
+                                    Text(user['type'], style: const TextStyle(fontSize: 20.0, color: Colors.black, fontWeight: FontWeight.bold)),
                                     const SizedBox(height: 10.0),
-                                    Text(user['land'], style: const TextStyle(fontSize: 16.0, color: Colors.black, decoration: TextDecoration.underline)),
+                                    const Text("Date :", style: const TextStyle(fontSize: 16.0, color: Colors.black, decoration: TextDecoration.underline)),
+                                    const SizedBox(height: 5.0),
+                                    Text("${user['date']} ${user['when']}", style: const TextStyle(fontSize: 16.0)),
                                   ],
                                 ),
                               ),
@@ -308,19 +322,21 @@ class _MyHomePageState extends State<MyHomePage> {
                     );
                   } else {
                     return const Center(
-                      child: CircularProgressIndicator(),
+                      child: Text("No new lesson"),
                     );
                   }
                 },
               ),
 
               //Parties
-              const Padding(
-                padding: EdgeInsets.all(1.0),
-                child: Text(
-                  "Events : ",
-                  style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold),
-                ),
+              Container(
+                padding: const EdgeInsets.all(10.0),
+                color: Color.fromRGBO(248,105,58, 1),
+                child: const Text("New Parties", style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                    fontStyle: FontStyle.italic,
+                    fontSize: 30)),
               ),
               FutureBuilder(
                 future: getAllParties(),
@@ -328,7 +344,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   if (snapshot.hasData) {
                     return CarouselSlider(
                       options: CarouselOptions(
-                        height: 310.0,
+                        height: 320.0,
                         autoPlay: (partyDate.length < 2 ? false : true),
                         autoPlayInterval: const Duration(seconds: 3),
                         autoPlayAnimationDuration: const Duration(milliseconds: 800),
@@ -352,12 +368,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                 scrollDirection: Axis.vertical,
                                 child: Column(
                                   children: [
-                                    Image.network(imgList[3]),
+                                    Image.network("https://cdn.discordapp.com/attachments/888356230379212831/1035303343423246366/soiree.jpeg"),
                                     const SizedBox(height: 10.0),
-                                    const Text("New Event !", style: const TextStyle(fontSize: 20.0, color: Colors.black, fontWeight: FontWeight.bold)),
+                                    Text(user['theme'], style: const TextStyle(fontSize: 20.0, color: Colors.black, fontWeight: FontWeight.bold)),
                                     const SizedBox(height: 10.0),
-                                    Text(user['theme'], style: const TextStyle(fontSize: 16.0, color: Colors.black, decoration: TextDecoration.underline)),
-                                  ],
+                                    const Text("Date :", style: const TextStyle(fontSize: 16.0, color: Colors.black, decoration: TextDecoration.underline)),
+                                    const SizedBox(height: 5.0),
+                                    Text("${user['date']} ${user['when']}", style: const TextStyle(fontSize: 16.0)),                                  ],
                                 ),
                               ),
                             );
@@ -368,7 +385,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     );
                   } else {
                     return const Center(
-                      child: CircularProgressIndicator(),
+                      child: Text("No new party"),
                     );
                   }
                 },
