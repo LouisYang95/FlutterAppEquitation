@@ -12,6 +12,9 @@ class _MyEventPageState extends State<MyEventPage> {
   /* set possible values for dropDownButton */
   List<String> menuItems = ['Aperitif', 'Meals'];
 
+  /* set default value for the dropDownButton */
+  String dropdownValue = 'Type of the Class';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
