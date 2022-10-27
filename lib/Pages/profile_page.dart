@@ -161,8 +161,7 @@ class _UserProfilState extends State<UserProfil> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profil'),
-        backgroundColor: Colors.transparent,
+        title: const Text('Profile'),
       ),
       body: isConnected
           ? Column(
@@ -342,21 +341,20 @@ class _UserProfilState extends State<UserProfil> {
                       )))
                 ])
           : Center(
-              child: Column(
-              //on click go back to main page
-              children: [
-                const Text('You are not connected'),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const MyApp()),
-                    );
-                  },
-                  child: const Text('Go back to main page'),
-                ),
-              ],
-            )),
+            child: Column(
+                //on click go back to main page
+              mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('You are not connected'),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/');
+                    },
+                    child: const Text('Go back to main page'),
+                  ),
+                ],
+              ),
+          ),
     );
   }
 }
