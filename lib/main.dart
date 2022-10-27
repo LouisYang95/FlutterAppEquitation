@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
       routes: {BonusPage.tag : (context)=>const BonusPage(title: 'Bonus')},
       theme: ThemeData(
         primarySwatch: Colors.orange,
+        scaffoldBackgroundColor: Colors.white.withAlpha(12000),
       ),
       // Write elements of db
       home: MyHomePage(title: '🏠 Home Page', db: db),
