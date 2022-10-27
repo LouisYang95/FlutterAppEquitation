@@ -21,11 +21,13 @@ class HorsePageState extends State<HorsePage> {
 
   getList(data) {}
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Choose Horse'),
+          title: const Text('🐴 BabacHorse '),
         ),
         body: Center(
           child: FutureBuilder(
@@ -36,59 +38,55 @@ class HorsePageState extends State<HorsePage> {
                       itemCount: snapshot.data.length,
                       itemBuilder: ((context, int index) {
                         return Center(
-                          child: Column(children: [
-                            Container(
-                              margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-                              child:
-                                  Image.network(snapshot.data[index]['photo']),
-                            ),
-                            Text(snapshot.data[index]['name'],
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 30)),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Text(snapshot.data[index]['genre'],
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20)),
-                                Text('${snapshot.data[index]['age']} year',
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20)),
-                              ],
-                            ),
-                            Container(
-                                margin: const EdgeInsets.fromLTRB(0, 20, 0, 20),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
+                          child: Card(
+                              elevation: 4.0,
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 10.0),
+                                child: Column(
                                   children: [
-                                    Text(snapshot.data[index]['breed']),
-                                    Text(snapshot.data[index]['speciality']
-                                        .toString()),
+                                    ListTile(
+                                      title: Container(
+                                        margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                                        child: Text(snapshot.data[index]['name'],
+                                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 30)
+                                        ),
+                                      ),
+                                      subtitle: Row(
+                                        children: [
+                                          Text(snapshot.data[index]['genre'],),
+                                          const SizedBox(width: 20.0),
+                                          Text('${snapshot.data[index]['age']} year'),
+                                        ],
+                                      ),
+                                      trailing: Icon(Icons.favorite_outline),
+                                    ),
+                                    Container(
+                                        height: 200.0,
+                                        child: Image.network(snapshot.data[index]['photo'], fit: BoxFit.cover)),
+                                    Container(
+                                        margin: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+                                        child: Text(
+                                          snapshot.data[index]['description'],
+                                          textAlign: TextAlign.center,
+                                        )
+                                    ),
+                                    Row(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                        children: [
+                                          ElevatedButton(
+                                            onPressed: () {},
+                                            child: const Text('Become Owner'),
+                                          ),
+                                          ElevatedButton(
+                                            onPressed: () {},
+                                            child: const Text('Become Half Boarder'),
+                                          ),
+                                        ]
+                                    )
                                   ],
-                                )),
-                            Container(
-                                margin: const EdgeInsets.fromLTRB(0, 20, 0, 20),
-                                child: Text(
-                                  snapshot.data[index]['description'],
-                                  textAlign: TextAlign.center,
-                                )),
-                            Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  ElevatedButton(
-                                    onPressed: () {},
-                                    child: const Text('Become Owner'),
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: () {},
-                                    child: const Text('Become Half Boarder'),
-                                  ),
-                                ])
-                          ]),
+                                ),
+                              )),
                         );
                       }));
                 } else {
