@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../Components/nav.dart';
+import 'package:mongo_dart/mongo_dart.dart' as mongo;
+import 'package:flutter_session_manager/flutter_session_manager.dart';
+
 
 class Event {
   final String theme;
@@ -38,7 +40,15 @@ class CreateEventPageState extends State<CreateEventPage> {
 /* Display button if data in the inputs is correct */
   bool isValid = false;
 
-  void createClass() {
+  getUserId() async {
+    var userId = await SessionManager().get("id");
+    // Transform it to objectId and search it in the database
+    var objectId = mongo.ObjectId.fromHexString(userId);
+    var user = await widget.db.collection('users').findOne({"_id": objectId});
+    return user['_id'];
+  }
+
+  Future<void> createClass() async {
     String formattedDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
     var c = Event(theme, date.text, hour.text, desc.text);
     widget.db.collection('parties').insertOne(<String, dynamic>{
@@ -46,7 +56,8 @@ class CreateEventPageState extends State<CreateEventPage> {
       'date': c.date,
       'when': c.hour,
       'description': c.desc,
-      'pending': true,
+      'status': "pending",
+      'user': await getUserId(),
       'creation_date': DateTime.now().millisecondsSinceEpoch,
       'creation_real_date': formattedDate
     });
@@ -59,7 +70,6 @@ class CreateEventPageState extends State<CreateEventPage> {
       appBar: AppBar(
         title: const Text('Create Event'),
       ),
-      drawer: DrawerWidget(db: widget.db),
       body: Center(
         child: Form(
           key: _formKey,

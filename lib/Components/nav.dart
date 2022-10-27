@@ -12,6 +12,14 @@ class DrawerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     // Get the user using SessionManager().get(id)
 
+    getUser() async {
+      var id = await SessionManager().get('id');
+      // Id to ObjectId
+      var objectId = ObjectId.fromHexString(id);
+      var user = await db.collection('users').findOne(where.eq('_id', objectId));
+      return user;
+    }
+
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -46,6 +54,7 @@ class DrawerWidget extends StatelessWidget {
               Navigator.pushNamed(context, '/contest');
             },
           ),
+          // Events
           ListTile(
             title: const Text('Events'),
             onTap: () {

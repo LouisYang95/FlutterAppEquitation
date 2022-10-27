@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mongo_dart/mongo_dart.dart' as mongo;
+import 'package:flutter_session_manager/flutter_session_manager.dart';
 
 class Class {
   final String land;
@@ -47,7 +49,19 @@ class CreateClassPageState extends State<CreateClassPage> {
 /* Display button if data in the inputs is correct */
   bool isValid = false;
 
-  void createClass() {
+  // Let user_id be the id of the user who created the class
+  getUserId() async {
+    var user_id = await SessionManager().get("id");
+    // Transform it to objectId and search it in the database
+   var objectId = mongo.ObjectId.fromHexString(user_id);
+    var user = await widget.db.collection('users').findOne({"_id": objectId});
+    return user['_id'];
+  }
+
+
+
+
+  Future<void> createClass() async {
     String formattedDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
     var c = Class(land, date.text, hour.text, duration, dropdownValue);
     widget.db.collection('lessons').insertOne(<String, dynamic>{
@@ -56,7 +70,8 @@ class CreateClassPageState extends State<CreateClassPage> {
       'when': c.hour,
       'duration': c.duration,
       'type': c.sport,
-      'pending': true,
+      'status': "pending",
+      'user': await getUserId(),
       'creation_date': DateTime.now().millisecondsSinceEpoch,
       'creation_real_date': formattedDate
     });

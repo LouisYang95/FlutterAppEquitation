@@ -39,7 +39,6 @@ dependencies:
   url_launcher: ^6.1.6
   carousel_slider: ^4.1.1-nullsafety.0
 
-
   image_picker: 0.8.6
   flutter_session_manager: ^1.0.3
   intl: ^0.17.0

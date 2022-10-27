@@ -14,12 +14,15 @@ class _MyRegisterState extends State<RegisterPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _emailController = TextEditingController();
+  final _profilePictureController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     saveUser() {
       final String username = _usernameController.text.trim();
       final String password = _passwordController.text.trim();
       final String email = _emailController.text.trim();
+      String profile_picture = _profilePictureController.text.trim();
 
       // If the form is valid, save the user in the database
       if (username != '' && password != '' && email != '') {
@@ -37,13 +40,16 @@ class _MyRegisterState extends State<RegisterPage> {
             'email': email
           }).toList().then((value) {
             if (value.length == 0) {
+              if (profile_picture == '') {
+                profile_picture = 'https://cdn-icons-png.flaticon.com/512/1160/1160040.png?w=360';
+              }
               widget.db.collection('users').insertOne(<String, dynamic>{
                 'username': username,
                 'password': password,
                 'email': email,
                 "is_admin": false,
-                // Creation date = Date / Hour only
-                'creation_date': DateTime.now().toString().substring(0, 16)
+                "photo": profile_picture,
+                'creation_date': DateTime.now().millisecondsSinceEpoch
               }).then((value) {
                 // Show a popup to confirm the registration
                 var popup = showDialog(
@@ -161,151 +167,180 @@ class _MyRegisterState extends State<RegisterPage> {
           ),
           body: Stack(
             children: [
-              Container(
-                padding: EdgeInsets.only(left: 35, top: 30),
-                child: Text(
-                  'Create\nAccount',
-                  style: TextStyle(color: Colors.black, fontSize: 33),
-                ),
-              ),
               SingleChildScrollView(
-                child: Container(
-                  padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height * 0.28),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(left: 35, right: 35),
-                        child: Column(
-                          children: [
-                            TextFormField(
-                              controller: _usernameController,
-                              style: TextStyle(color: Colors.black),
-                              decoration: InputDecoration(
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                  hintText: "Name",
-                                  hintStyle: TextStyle(color: Colors.black),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  )),
-                            ),
-                            SizedBox(
-                              height: 30,
-                            ),
-                            TextFormField(
-                              controller: _emailController,
-                              style: TextStyle(color: Colors.black),
-                              decoration: InputDecoration(
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                  hintText: "Email",
-                                  hintStyle: TextStyle(color: Colors.black),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  )),
-                            ),
-                            SizedBox(
-                              height: 30,
-                            ),
-                            TextFormField(
-                              controller: _passwordController,
-                              style: TextStyle(color: Colors.black),
-                              obscureText: true,
-                              decoration: InputDecoration(
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                  hintText: "Password",
-                                  hintStyle: TextStyle(color: Colors.black),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  )),
-                            ),
-                            SizedBox(
-                              height: 40,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.only(left: 10, top: 130, bottom: 40),
+                      child: Text(
+                        'Register \n Now',
+                        style: TextStyle(color: Colors.black, fontSize: 33),
+                      ),
+                    ),
+                    Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(left: 35, right: 35),
+                            child: Column(
                               children: [
-                                Text(
-                                  'Sign Up',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 27,
-                                      fontWeight: FontWeight.w700),
-                                ),
-                                CircleAvatar(
-                                  radius: 30,
-                                  backgroundColor: Color(0xff4c505b),
-                                  child: IconButton(
-                                      color: Colors.white,
-                                      onPressed: () {
-                                        saveUser();
-                                      },
-                                      icon: Icon(
-                                        Icons.arrow_forward,
+                                TextFormField(
+                                  controller: _usernameController,
+                                  style: TextStyle(color: Colors.black),
+                                  decoration: InputDecoration(
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: BorderSide(
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: BorderSide(
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                      hintText: "Name",
+                                      hintStyle: TextStyle(color: Colors.black),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
                                       )),
-                                )
-                              ],
-                            ),
-                            SizedBox(
-                              height: 40,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pushNamed(context, '/login');
-                                  },
-                                  child: Text(
-                                    'Sign In',
-                                    textAlign: TextAlign.left,
-                                    style: TextStyle(
-                                        decoration: TextDecoration.underline,
-                                        color: Colors.black,
-                                        fontSize: 18),
-                                  ),
-                                  style: ButtonStyle(),
+                                ),
+                                SizedBox(
+                                  height: 30,
+                                ),
+                                TextFormField(
+                                  controller: _emailController,
+                                  style: TextStyle(color: Colors.black),
+                                  decoration: InputDecoration(
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: BorderSide(
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: BorderSide(
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                      hintText: "Email",
+                                      hintStyle: TextStyle(color: Colors.black),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      )),
+                                ),
+                                SizedBox(
+                                  height: 30,
+                                ),
+                                TextFormField(
+                                  controller: _passwordController,
+                                  style: TextStyle(color: Colors.black),
+                                  obscureText: true,
+                                  decoration: InputDecoration(
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: BorderSide(
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: BorderSide(
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                      hintText: "Password",
+                                      hintStyle: TextStyle(color: Colors.black),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      )),
+                                ),
+                                SizedBox(
+                                  height: 30,
+                                ),
+                                TextFormField(
+                                  controller: _profilePictureController,
+                                  style: TextStyle(color: Colors.black),
+                                  obscureText: true,
+                                  decoration: InputDecoration(
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: BorderSide(
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: BorderSide(
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                      hintText: "Link to Profile Picture",
+                                      hintStyle: TextStyle(color: Colors.black),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      )),
+                                ),
+                                SizedBox(
+                                  height: 40,
+                                ),
+
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Sign Up',
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 27,
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                    CircleAvatar(
+                                      radius: 30,
+                                      backgroundColor: Color(0xff4c505b),
+                                      child: IconButton(
+                                          color: Colors.white,
+                                          onPressed: () {
+                                            saveUser();
+                                          },
+                                          icon: Icon(
+                                            Icons.arrow_forward,
+                                          )),
+                                    )
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 40,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pushNamed(context, '/login');
+                                      },
+                                      child: Text(
+                                        'Sign In',
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                            decoration: TextDecoration.underline,
+                                            color: Colors.black,
+                                            fontSize: 18),
+                                      ),
+                                      style: ButtonStyle(),
+                                    ),
+                                  ],
                                 ),
                               ],
-                            )
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ]
                 ),
               ),
             ],
