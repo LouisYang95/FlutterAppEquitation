@@ -54,6 +54,12 @@ class DrawerWidget extends StatelessWidget {
               Navigator.pushNamed(context, '/contest');
             },
           ),
+          ListTile(
+            title: const Text('Event'),
+            onTap: () {
+              Navigator.pushNamed(context, '/event');
+            },
+          ),
 
             // Print infos of user
           FutureBuilder(

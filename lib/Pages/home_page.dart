@@ -42,11 +42,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {Navigator.of(context).pushNamed(MyEventPage.tag);},
-        child: Text('click'),
-        backgroundColor: Colors.red,
-      ),
     );
   }
 }

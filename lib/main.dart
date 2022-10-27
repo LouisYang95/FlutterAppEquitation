@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_equitation/Pages/event_page.dart';
 
 
 
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
         '/register': (context) => RegisterPage(db: db),
         '/contest': (context) => CreateContestPage(db: db),
         '/class': (context) => CreateClassPage(db: db),
+        '/event': (context) => CreateEventPage(db: db),
         '/admin': (context) => AdminPage(db: db),
         '/forgot_password' : (context) => ForgotPasswordPage(db: db),
 

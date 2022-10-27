@@ -1,54 +1,70 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_equitation/Mongo.dart';
+import 'package:intl/intl.dart';
+import '../Components/nav.dart';
 
-
-class Class {
+class Event {
   final String theme;
   final String date;
+  final String hour;
+  final String duration;
 
-
-  Class(this.theme, this.date);
+  Event(this.theme, this.date, this.hour, this.duration);
 }
 
-class MyEventPage extends StatefulWidget {
-  static const String tag = "event";
+class CreateEventPage extends StatefulWidget {
+  static const tag = "event_page";
 
-  const MyEventPage({super.key, required this.db});
+  const CreateEventPage({super.key, required this.db});
+
   final db;
 
   @override
-  State<MyEventPage> createState() => _MyEventPageState();
+  State<CreateEventPage> createState() => CreateEventPageState();
 }
 
-class _MyEventPageState extends State<MyEventPage> {
+enum Theme { aperitif, meals }
+
+enum DurationT { half, hour }
+
+class CreateEventPageState extends State<CreateEventPage> {
+  String theme = 'Aperitif';
   final date = TextEditingController();
-
-  /* set possible values for dropDownButton */
-  List<String> menuItems = ['Aperitif', 'Meals'];
-
-  /* set default value for the dropDownButton */
-  String dropdownValue = 'Theme nights';
-
-  /* Display button if data in the inputs is correct */
-  bool isValid = false;
+  final hour = TextEditingController();
+  String duration = '30 min';
 
   final _formKey = GlobalKey<FormState>();
 
+  /* Set default value for radio input */
+  Theme? _theme = Theme.aperitif;
+  DurationT? _duration = DurationT.half;
+
+
+
+
+/* Display button if data in the inputs is correct */
+  bool isValid = false;
+
   void createClass() {
-    var c = Class(dropdownValue, date.text);
+    String formattedDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
+    var c = Event(theme, date.text, hour.text, duration);
     widget.db.collection('parties').insertOne(<String, dynamic>{
       'theme': c.theme,
-      'date': c.date
-      
+      'date': c.date,
+      'when': c.hour,
+      'pending': true,
+      'creation_date': DateTime.now().millisecondsSinceEpoch,
+      'creation_real_date': formattedDate
     });
+    Navigator.pushNamed(context, '/');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Theme night'),
+        title: const Text('Create Event'),
       ),
+      drawer: DrawerWidget(db: widget.db),
       body: Center(
         child: Form(
           key: _formKey,
@@ -57,71 +73,99 @@ class _MyEventPageState extends State<MyEventPage> {
               isValid = _formKey.currentState!.validate();
             });
           },
-        child: Column(
-          children: [
-            TextFormField(
-                controller: date,
-                decoration: const InputDecoration(
-                    icon: Icon(Icons.calendar_today),
-                    labelText: "Enter Date"),
-                readOnly: true,
-                validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return "Date required";
-                  }
-                  return null;
-                },
-                onTap: () async {
-                  DateTime? pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2101));
-
-                  if (pickedDate != null) {
-                    String formattedDate =
-                    DateFormat('dd-MM-yyyy').format(pickedDate);
+          child: Column(
+            children: [
+              ListTile(
+                title: const Text('aperitif'),
+                leading: Radio(
+                  value: Theme.aperitif,
+                  groupValue: _theme,
+                  onChanged: (Theme? value) {
                     setState(() {
-                      date.text = formattedDate;
+                      _theme = value;
+                      theme = 'aperitif';
                     });
-                  }
-                }),
-            DropdownButtonFormField<String>(
-              dropdownColor: const Color.fromARGB(245, 215, 194, 239),
-              value: dropdownValue,
-              icon: const Icon(Icons.arrow_downward),
-              elevation: 16,
-              style: const TextStyle(color: Colors.deepPurple),
-              validator: (String? value) {
-                if (value == 'Theme night') {
-                  return "Type required";
-                }
-                return null;
-              },
-              onChanged: (String? newValue) {
-                setState(() {
-                  dropdownValue = newValue!;
-                });
-              },
-              items: const <DropdownMenuItem<String>>[
-                DropdownMenuItem(
-                    value: 'Theme nights',
-                    child: Text('Theme night')
+                  },
                 ),
-                DropdownMenuItem(value: 'Aperitif', child: Text('Aperitif')),
-                DropdownMenuItem(
-                    value: 'Meals', child: Text('Meals')
+              ),
+              ListTile(
+                title: const Text('meals'),
+                leading: Radio(
+                  value: Theme.meals,
+                  groupValue: _theme,
+                  onChanged: (Theme? value) {
+                    setState(() {
+                      _theme = value;
+                      theme = 'meals';
+                    });
+                  },
                 ),
-              ],
-            ),
-            Container(
-                padding: const EdgeInsets.only(left: 150.0, top: 40.0),
-                child: ElevatedButton(
-                  onPressed: isValid ? createClass : null,
-                  child: const Text('Reserve'),
-                )),
-          ],
-        ),
+              ),
+              TextFormField(
+                  controller: date,
+                  decoration: const InputDecoration(
+                      icon: Icon(Icons.calendar_today),
+                      labelText: "Enter Date"),
+                  readOnly: true,
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return "Date required";
+                    }
+                    return null;
+                  },
+                  onTap: () async {
+                    DateTime? pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2101));
+
+                    if (pickedDate != null) {
+                      String formattedDate =
+                      DateFormat('dd-MM-yyyy').format(pickedDate);
+                      setState(() {
+                        date.text = formattedDate;
+                      });
+                    }
+                  }),
+              const Text('Hour'),
+              TextFormField(
+                  controller: hour,
+                  decoration: const InputDecoration(
+                      icon: Icon(Icons.timer), labelText: "Enter the Time"),
+                  readOnly: true,
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return "Time required";
+                    }
+                    return null;
+                  },
+                  onTap: () async {
+                    TimeOfDay? pickedTime = await showTimePicker(
+                      initialTime: TimeOfDay.now(),
+                      context: context,
+                    );
+
+                    if (pickedTime != null) {
+                      DateTime parsedTime = DateFormat.jm()
+                          .parse(pickedTime.format(context).toString());
+
+                      String formattedTime =
+                      DateFormat('HH:mm').format(parsedTime);
+
+                      setState(() {
+                        hour.text = formattedTime;
+                      });
+                    }
+                  }),
+              Container(
+                  padding: const EdgeInsets.only(left: 150.0, top: 40.0),
+                  child: ElevatedButton(
+                    onPressed: isValid ? createClass : null,
+                    child: const Text('Reserve'),
+                  )),
+            ],
+          ),
         ),
       ),
     );
