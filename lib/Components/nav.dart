@@ -56,7 +56,7 @@ class DrawerWidget extends StatelessWidget {
             },
           ),
           ListTile(
-            title: const Text('Contest'),
+            title: const Text('Paticipate to a Contest'),
             onTap: () {
               Navigator.pushNamed(context, '/participate_contest');
             },

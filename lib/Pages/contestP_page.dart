@@ -14,9 +14,10 @@ class ContestPage extends StatefulWidget {
 class ContestPageState extends State<ContestPage> {
   final _formKey = GlobalKey<FormState>();
 
-  String dropdownValue = 'Choose the riders contest';
-
+  /* Display button if data in the inputs is correct */
   bool isValid = false;
+
+  String dropdownValue = 'Choose the contest';
 
   void updateContest() {
     //TODO implement update contest in DB
@@ -36,8 +37,8 @@ class ContestPageState extends State<ContestPage> {
     ));
     for (var i = 0; i < data.length; i++) {
       horsemenItem.add(DropdownMenuItem(
-        value: data[i]['username'],
-        child: Text(data[i]['username']),
+        value: data[i]['name'],
+        child: Text(data[i]['name']),
       ));
     }
     return horsemenItem;
@@ -56,25 +57,33 @@ class ContestPageState extends State<ContestPage> {
               future: getAllContests(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if (snapshot.hasData) {
-                  return DropdownButtonFormField<String>(
-                    dropdownColor: const Color.fromARGB(245, 215, 194, 239),
-                    value: dropdownValue,
-                    icon: const Icon(Icons.supervised_user_circle),
-                    elevation: 16,
-                    style: const TextStyle(color: Colors.deepPurple),
-                    validator: (String? value) {
-                      if (value == 'Choose the contest') {
-                        return "Type required";
-                      }
-                      return null;
-                    },
-                    items: fillContestsList(snapshot.data),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        dropdownValue = newValue!;
-                      });
-                    },
-                  );
+                  return Form(
+                      key: _formKey,
+                      onChanged: () {
+                        setState(() {
+                          isValid = _formKey.currentState!.validate();
+                        });
+                      },
+                      child: DropdownButtonFormField<String>(
+                        dropdownColor: const Color.fromARGB(245, 194, 225, 239),
+                        value: dropdownValue,
+                        icon: const Icon(Icons.supervised_user_circle),
+                        elevation: 16,
+                        style: const TextStyle(
+                            color: Color.fromARGB(255, 119, 135, 131)),
+                        validator: (String? value) {
+                          if (value == 'Choose the contest') {
+                            return "Type required";
+                          }
+                          return null;
+                        },
+                        items: fillContestsList(snapshot.data),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            dropdownValue = newValue!;
+                          });
+                        },
+                      ));
                 } else {
                   return const Center(
                     child: CircularProgressIndicator(),

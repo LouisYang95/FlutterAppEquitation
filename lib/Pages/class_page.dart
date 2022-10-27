@@ -191,11 +191,11 @@ class CreateClassPageState extends State<CreateClassPage> {
                 ),
               ),
               DropdownButtonFormField<String>(
-                dropdownColor: const Color.fromARGB(245, 215, 194, 239),
+                dropdownColor: const Color.fromARGB(245, 169, 204, 236),
                 value: dropdownValue,
                 icon: const Icon(Icons.arrow_downward),
                 elevation: 16,
-                style: const TextStyle(color: Colors.deepPurple),
+                style: const TextStyle(color: Color.fromARGB(255, 153, 175, 176)),
                 validator: (String? value) {
                   if (value == 'Type of the Class') {
                     return "Type required";
