@@ -17,13 +17,16 @@ class UserProfil extends StatefulWidget {
 
 class _UserProfilState extends State<UserProfil> {
   final _formKey = GlobalKey<FormState>();
+  var session = SessionManager();
+
+  // My variable for controller textfield :
   final _nameField = TextEditingController();
   final _emailField = TextEditingController();
   final _passwordField = TextEditingController();
   final _phoneNumber = TextEditingController();
   final _agesField = TextEditingController();
   final _ffeField = TextEditingController();
-  var session = SessionManager();
+  final _photoUrl = TextEditingController();
 
   // Uri ffeUrl = Uri.parse('https://www.ffe.com/');
   bool showInfo = false;
@@ -51,6 +54,22 @@ class _UserProfilState extends State<UserProfil> {
   defineNewValue(var variable, final controller) async {
     var idUser = await SessionManager().get('id');
     var id = mongo.ObjectId.fromHexString(idUser);
+    if (controller.text == null || controller.text == '') {
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                title: Text('Warning'),
+                content: Text('Complete the field please'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('Ok'),
+                  )
+                ],
+              ));
+    }
     if (variable == _nameField) {
       setState(() {
         _nameField.text = controller.text;
@@ -70,6 +89,13 @@ class _UserProfilState extends State<UserProfil> {
         widget.db.collection('users').update(mongo.where.eq('_id', id),
             mongo.modify.set('password', _passwordField.text));
         _passwordField.text = controller.text;
+        Navigator.pop(context);
+      });
+    } else if (variable == _photoUrl) {
+      setState(() {
+        widget.db.collection('users').update(mongo.where.eq('_id', id),
+            mongo.modify.set('photoUrl', _photoUrl.text));
+        _photoUrl.text = controller.text;
         Navigator.pop(context);
       });
     }
@@ -111,8 +137,8 @@ class _UserProfilState extends State<UserProfil> {
       showDialog(
           context: context,
           builder: (context) => AlertDialog(
-                title: Text('Attention'),
-                content: Text('Veuillez remplir tous les champs'),
+                title: Text('Warning'),
+                content: Text('Complete the field please'),
                 actions: [
                   TextButton(
                     onPressed: () {
@@ -185,6 +211,7 @@ class _UserProfilState extends State<UserProfil> {
         phone: user['phoneNumber'],
         ages: user['ages'],
         ffe: user['ffe'],
+        photoUrl: user['photo'],
       );
       setState(() {
         myProfil.add(me);
@@ -200,6 +227,7 @@ class _UserProfilState extends State<UserProfil> {
     _agesField.text = myProfil[0].ages;
     _phoneNumber.text = myProfil[0].phone;
     _ffeField.text = myProfil[0].ffe;
+    _photoUrl.text = myProfil[0].photoUrl;
   }
 
   void updateToDatabase() async {
@@ -227,13 +255,17 @@ class _UserProfilState extends State<UserProfil> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                   Container(
-                    height: 100,
-                    width: 100,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.blue,
-                    ),
-                  ),
+                      child: GestureDetector(
+                    onTap: () {
+                      changeValue(_photoUrl, _photoUrl);
+                    },
+                    child: _photoUrl != null
+                        ? CircleAvatar(
+                            radius: 90,
+                            backgroundImage: NetworkImage(_photoUrl.text),
+                          )
+                        : const Icon(Icons.person),
+                  )),
                   GestureDetector(
                     onTap: () async {
                       changeValue(_nameField, _nameField);
@@ -439,6 +471,7 @@ class _UserProfilState extends State<UserProfil> {
                 ],
               ),
           ),
+
     );
   }
 }
