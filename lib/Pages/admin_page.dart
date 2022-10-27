@@ -225,6 +225,7 @@ class _MyAdminState extends State<AdminPage> {
                                                 child: Text('Accept'),
                                                 onPressed: () {
                                                   widget.db.collection('lessons').updateOne(mongo.where.eq('_id', snapshot.data[index]['_id']), mongo.modify.set('status', 'accepted'));
+                                                  setState(() {});
                                                   Navigator.of(context).pop();
                                                 },
                                               ),
@@ -234,6 +235,8 @@ class _MyAdminState extends State<AdminPage> {
                                                 child: Text('Reject'),
                                                 onPressed: () {
                                                   widget.db.collection('lessons').updateOne(mongo.where.eq('_id', snapshot.data[index]['_id']), mongo.modify.set('status', 'rejected'));
+                                                  // Set state
+                                                  setState(() {});
                                                   Navigator.of(context).pop();
                                                 },
                                               ),
