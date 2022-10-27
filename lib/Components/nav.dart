@@ -23,10 +23,10 @@ class DrawerWidget extends StatelessWidget {
             child: Text('Navigation'),
           ),
           ListTile(
-          title: const Text('Bonus'),
-          onTap: () {
-            Navigator.pushNamed(context, '/bonus');
-          },
+            title: const Text('Bonus'),
+            onTap: () {
+              Navigator.pushNamed(context, '/bonus');
+            },
           ),
           ListTile(
             title: const Text('Profile'),
@@ -47,15 +47,21 @@ class DrawerWidget extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text('Events'),
+            title: const Text('Events'),
             onTap: () {
               Navigator.pushNamed(context, '/all_events');
             },
           ),
           ListTile(
-            title: Text('Dashboard'),
+            title: const Text('Dashboard'),
             onTap: () {
               Navigator.pushNamed(context, '/admin');
+            },
+          ),
+          ListTile(
+            title: const Text('Horses'),
+            onTap: () {
+              Navigator.pushNamed(context, '/horses');
             },
           ),
         ],
