@@ -129,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
               const Padding(
                 padding: EdgeInsets.all(20.0),
                 child: Text(
-                  "Nouveauté de la journée : ",
+                  "News of the day : ",
                   style: TextStyle(fontSize: 25.0, decoration: TextDecoration.underline),
                 ),
               ),
@@ -138,7 +138,7 @@ class _MyHomePageState extends State<MyHomePage> {
               const Padding(
                 padding: EdgeInsets.all(1.0),
                 child: Text(
-                  "Cavaliers : ",
+                  "Rider : ",
                   style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold),
                 ),
               ),
@@ -174,7 +174,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   children: [
                                     Image.network(imgList[0]),
                                     const SizedBox(height: 10.0),
-                                    const Text("Nouveau Cavalier !", style: const TextStyle(fontSize: 20.0, color: Colors.black, fontWeight: FontWeight.bold)),
+                                    const Text("New Rider !", style: const TextStyle(fontSize: 20.0, color: Colors.black, fontWeight: FontWeight.bold)),
                                     const SizedBox(height: 10.0),
                                     Text(user['username'], style: const TextStyle(fontSize: 16.0, color: Colors.black, decoration: TextDecoration.underline)),
                                   ],
@@ -318,7 +318,7 @@ class _MyHomePageState extends State<MyHomePage> {
               const Padding(
                 padding: EdgeInsets.all(1.0),
                 child: Text(
-                  "Parties : ",
+                  "Events : ",
                   style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold),
                 ),
               ),
@@ -354,7 +354,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   children: [
                                     Image.network(imgList[3]),
                                     const SizedBox(height: 10.0),
-                                    const Text("New Party !", style: const TextStyle(fontSize: 20.0, color: Colors.black, fontWeight: FontWeight.bold)),
+                                    const Text("New Event !", style: const TextStyle(fontSize: 20.0, color: Colors.black, fontWeight: FontWeight.bold)),
                                     const SizedBox(height: 10.0),
                                     Text(user['theme'], style: const TextStyle(fontSize: 16.0, color: Colors.black, decoration: TextDecoration.underline)),
                                   ],
