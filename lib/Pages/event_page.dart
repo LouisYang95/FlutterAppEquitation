@@ -69,6 +69,12 @@ class _MyEventPageState extends State<MyEventPage> {
                     value: 'Meals', child: Text('Meals')),
               ],
             ),
+            Container(
+                padding: const EdgeInsets.only(left: 150.0, top: 40.0),
+                child: ElevatedButton(
+                  onPressed: isValid ? createClass : null,
+                  child: const Text('Reserve'),
+                )),
           ],
         ),
         ),
