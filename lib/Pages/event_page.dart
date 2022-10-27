@@ -4,6 +4,7 @@ import 'package:flutter_app_equitation/Mongo.dart';
 class MyEventPage extends StatefulWidget {
   static const String tag = "event";
 
+  const MyEventPage({super.key, required this.db});
   final db;
 
   @override
