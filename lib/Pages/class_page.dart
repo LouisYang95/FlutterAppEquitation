@@ -49,6 +49,7 @@ class CreateClassPageState extends State<CreateClassPage> {
   bool isValid = false;
 
   void createClass() {
+    String formattedDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
     var c = Class(land, date.text, hour.text, duration, dropdownValue);
     widget.db.collection('lessons').insertOne(<String, dynamic>{
       'land': c.land,
@@ -56,8 +57,11 @@ class CreateClassPageState extends State<CreateClassPage> {
       'when': c.hour,
       'duration': c.duration,
       'type': c.sport,
-      'creation_date': DateTime.now().toString().substring(0, 16)
+      'pending': true,
+      'creation_date': DateTime.now().millisecondsSinceEpoch,
+      'creation_real_date': formattedDate
     });
+    Navigator.pushNamed(context, '/');
   }
 
   @override
