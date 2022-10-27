@@ -14,11 +14,14 @@ class DrawerWidget extends StatelessWidget {
     var logo = "https://cdn.discordapp.com/attachments/930039778332786718/1035170994597396530/playstore.png";
 
     getUser() async {
-    var id = await SessionManager().get('id');
-    // Id to ObjectId
-    var objectId = ObjectId.fromHexString(id);
-    var user = await db.collection('users').findOne(where.eq('_id', objectId));
-    return user;
+
+      var id = await SessionManager().get('id');
+      // Id to ObjectId
+      var objectId = ObjectId.fromHexString(id);
+      var user =
+          await db.collection('users').findOne(where.eq('_id', objectId));
+      return user;
+
     }
 
 
@@ -79,6 +82,12 @@ class DrawerWidget extends StatelessWidget {
               title: Text('Dashboard'),
               onTap: () {
                 Navigator.pushNamed(context, '/admin');
+              },
+            ),
+            ListTile(
+              title: const Text('Horses'),
+              onTap: () {
+                Navigator.pushNamed(context, '/horses');
               },
             ),
             ListTile(

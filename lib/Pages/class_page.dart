@@ -16,7 +16,7 @@ class Class {
 class CreateClassPage extends StatefulWidget {
   static const tag = "class_page";
 
-  const CreateClassPage({super.key, required this.db});
+  const CreateClassPage({Key? key, this.db}) : super(key: key);
 
   final db;
 
