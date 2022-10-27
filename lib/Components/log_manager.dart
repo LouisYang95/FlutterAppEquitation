@@ -7,22 +7,33 @@ const LogManager({Key? key, this.db}) : super(key: key);
 
 final db;
 
-
 @override
 _LogManagerState createState() => _LogManagerState();
 }
 
 class _LogManagerState extends State<LogManager> {
+
+
   // Use session.get('isLogged').then((value)
   // to check if user is logged or not
   // Use session.get('id').then((value)
   // to get the id of the user
   // Get the value of the session isLogged then stock it in a variable
+
+  Future<bool> isLogged() async {
+    var isLogged = await SessionManager().get('isLogged');
+    if (isLogged == null || isLogged == true) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
 @override
 Widget build(BuildContext context) {
   var session = SessionManager();
   return FutureBuilder(
-    future: session.get('isLogged'),
+    future: isLogged(),
     builder: (BuildContext context, AsyncSnapshot snapshot) {
       if (snapshot.hasData) {
         if (snapshot.data == true) {

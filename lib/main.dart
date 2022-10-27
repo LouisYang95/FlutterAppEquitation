@@ -13,6 +13,8 @@ import 'package:flutter_app_equitation/Pages/profile_page.dart';
 import 'package:flutter_app_equitation/Pages/forgot_pass_page.dart';
 import 'package:flutter_app_equitation/Pages/class_page.dart';
 import 'package:flutter_app_equitation/Pages/contest_page.dart';
+import 'package:flutter_app_equitation/Pages/all_events_page.dart';
+
 
 
 // import Mongo.dart file
@@ -45,6 +47,7 @@ class MyApp extends StatelessWidget {
         '/class': (context) => CreateClassPage(db: db),
         '/admin': (context) => AdminPage(db: db),
         '/forgot_password' : (context) => ForgotPasswordPage(db: db),
+        '/all_events' : (context) => AllEventsPage(db: db),
 
       },
       theme: ThemeData(
