@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_app_equitation/Pages/bonus_page.dart';
 import 'package:flutter_app_equitation/Pages/class_page.dart';
 
-import 'Pages/home_page.dart';
+
+// Import all pages
+import 'package:flutter_app_equitation/Pages/home_page.dart';
+import 'package:flutter_app_equitation/Pages/login_page.dart';
+import 'package:flutter_app_equitation/Pages/register_page.dart';
+import 'package:flutter_app_equitation/Pages/bonus_page.dart';
 
 // import Mongo.dart file
 import 'Mongo.dart';
@@ -26,14 +32,16 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       routes: {
-        BonusPage.tag: (context) => const BonusPage(title: 'Bonus'),
-        CreateClassPage.tag: (context) =>  CreateClassPage(db: db),
+
+        '/': (context) => MyHomePage(title: '🏠 Home Page', db: db),
+        '/bonus': (context) => BonusPage(title:'Bonus Page'),
+        '/login': (context) => LoginPage(db: db),
+        '/register': (context) => RegisterPage(db: db),
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      // Write elements of db
-      home: MyHomePage(title: '🏠 Home Page', db: db),
+
     );
   }
 }
