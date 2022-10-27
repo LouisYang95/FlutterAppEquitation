@@ -17,14 +17,18 @@ class UserProfil extends StatefulWidget {
 
 class _UserProfilState extends State<UserProfil> {
   final _formKey = GlobalKey<FormState>();
+  var session = SessionManager();
+
+  // My variable for controller textfield :
   final _nameField = TextEditingController();
   final _emailField = TextEditingController();
   final _passwordField = TextEditingController();
+  final _phoneNumber = TextEditingController();
+  final _agesField = TextEditingController();
   final _ffeField = TextEditingController();
-  var session = SessionManager();
+  final _photoUrl = TextEditingController();
 
-  Uri youtubeUrl = Uri.parse('https://www.youtube.com/');
-  // var _name = 'Nom';
+  // Uri ffeUrl = Uri.parse('https://www.ffe.com/');
   bool showInfo = false;
   bool isCompleted = false;
   List myProfil = [];
@@ -32,9 +36,7 @@ class _UserProfilState extends State<UserProfil> {
 
   Future<bool> isLogged() async {
     var isLogged = await SessionManager().get('isLogged');
-    var id = await SessionManager().get('id');
-
-    if (isLogged == null || isLogged == true) {
+    if (isLogged == true) {
       isConnected = true;
     } else {
       isConnected = false;
@@ -47,35 +49,109 @@ class _UserProfilState extends State<UserProfil> {
     super.initState();
     isLogged();
     getUser();
-    if (_ffeField.text.isNotEmpty) {
-      setState(() {
-        isCompleted = true;
-      });
-    }
   }
 
   defineNewValue(var variable, final controller) async {
     var idUser = await SessionManager().get('id');
     var id = mongo.ObjectId.fromHexString(idUser);
+    if (controller.text == null || controller.text == '') {
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                title: Text('Warning'),
+                content: Text('Complete the field please'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('Ok'),
+                  )
+                ],
+              ));
+    }
     if (variable == _nameField) {
       setState(() {
         _nameField.text = controller.text;
+        widget.db.collection('users').update(mongo.where.eq('_id', id),
+            mongo.modify.set('username', _nameField.text));
         Navigator.pop(context);
       });
     } else if (variable == _emailField) {
       setState(() {
+        widget.db.collection('users').update(mongo.where.eq('_id', id),
+            mongo.modify.set('email', _emailField.text));
         _emailField.text = controller.text;
         Navigator.pop(context);
       });
     } else if (variable == _passwordField) {
       setState(() {
+        widget.db.collection('users').update(mongo.where.eq('_id', id),
+            mongo.modify.set('password', _passwordField.text));
         _passwordField.text = controller.text;
+        Navigator.pop(context);
+      });
+    } else if (variable == _photoUrl) {
+      setState(() {
+        widget.db.collection('users').update(mongo.where.eq('_id', id),
+            mongo.modify.set('photoUrl', _photoUrl.text));
+        _photoUrl.text = controller.text;
         Navigator.pop(context);
       });
     }
   }
 
-  changeName(var variable, final controller) {
+  addUserData() async {
+    var idUser = await SessionManager().get('id');
+    var id = mongo.ObjectId.fromHexString(idUser);
+    if (_phoneNumber.text != '' &&
+        _agesField.text != '' &&
+        _ffeField.text != '') {
+      setState(() {
+        _phoneNumber.text = _phoneNumber.text;
+        _agesField.text = _agesField.text;
+        _ffeField.text = _ffeField.text;
+        if (_agesField.text.length > 2) {
+          _agesField.text = _agesField.text.substring(0, 2);
+        }
+        if (_phoneNumber.text.length > 10) {
+          _phoneNumber.text = _phoneNumber.text.substring(0, 10);
+        }
+
+        if (_phoneNumber.text.contains(RegExp(r'[a-zA-Z]')) ||
+            _agesField.text.contains(RegExp(r'[a-zA-Z]'))) {
+          _phoneNumber.text =
+              _phoneNumber.text.replaceAll(RegExp(r'[a-zA-Z]'), '');
+          _agesField.text = _agesField.text.replaceAll(RegExp(r'[a-zA-Z]'), '');
+        }
+        widget.db.collection('users').update(mongo.where.eq('_id', id),
+            mongo.modify.set('phoneNumber', _phoneNumber.text));
+        widget.db.collection('users').update(mongo.where.eq('_id', id),
+            mongo.modify.set('ages', _agesField.text));
+        widget.db.collection('users').update(
+            mongo.where.eq('_id', id), mongo.modify.set('ffe', _ffeField.text));
+        Navigator.of(context).pop();
+      });
+    } else {
+      //show alert if one of the field is empty
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                title: Text('Warning'),
+                content: Text('Complete the field please'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('Ok'),
+                  )
+                ],
+              ));
+    }
+  }
+
+  changeValue(var variable, final controller) {
     showDialog(
         context: context,
         builder: (context) {
@@ -112,6 +188,7 @@ class _UserProfilState extends State<UserProfil> {
                   ElevatedButton(
                     onPressed: () {
                       defineNewValue(variable, controller);
+                      Navigator.of(context).pop();
                     },
                     child: const Text('change'),
                   )
@@ -122,24 +199,35 @@ class _UserProfilState extends State<UserProfil> {
 
   void getUser() async {
     var idUser = await SessionManager().get('id');
-    var id = mongo.ObjectId.fromHexString(idUser);
-    var user =
-        await widget.db.collection('users').findOne(mongo.where.eq('_id', id));
-    Users me = Users(
-      name: user['username'],
-      email: user['email'],
-      password: user['password'],
-    );
-    setState(() {
-      myProfil.add(me);
-      defineControllerUser();
-    });
+    if (idUser != '' && idUser != null) {
+      var id = mongo.ObjectId.fromHexString(idUser);
+      var user = await widget.db
+          .collection('users')
+          .findOne(mongo.where.eq('_id', id));
+      Users me = Users(
+        name: user['username'],
+        email: user['email'],
+        password: user['password'],
+        phone: user['phoneNumber'],
+        ages: user['ages'],
+        ffe: user['ffe'],
+        photoUrl: user['photo'],
+      );
+      setState(() {
+        myProfil.add(me);
+        defineControllerUser();
+      });
+    }
   }
 
   void defineControllerUser() {
     _nameField.text = myProfil[0].name;
     _emailField.text = myProfil[0].email;
     _passwordField.text = myProfil[0].password;
+    _agesField.text = myProfil[0].ages;
+    _phoneNumber.text = myProfil[0].phone;
+    _ffeField.text = myProfil[0].ffe;
+    _photoUrl.text = myProfil[0].photoUrl;
   }
 
   void updateToDatabase() async {
@@ -162,21 +250,26 @@ class _UserProfilState extends State<UserProfil> {
         backgroundColor: Colors.transparent,
       ),
       body: isConnected
-          ? Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
+          ? SingleChildScrollView(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
                   Container(
-                    height: 100,
-                    width: 100,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.blue,
-                    ),
-                  ),
+                      child: GestureDetector(
+                    onTap: () {
+                      changeValue(_photoUrl, _photoUrl);
+                    },
+                    child: _photoUrl != null
+                        ? CircleAvatar(
+                            radius: 90,
+                            backgroundImage: NetworkImage(_photoUrl.text),
+                          )
+                        : const Icon(Icons.person),
+                  )),
                   GestureDetector(
                     onTap: () async {
-                      changeName(_nameField, _nameField);
+                      changeValue(_nameField, _nameField);
                     },
                     child: ListTile(
                       title: Center(
@@ -202,7 +295,7 @@ class _UserProfilState extends State<UserProfil> {
                                 padding: const EdgeInsets.all(10),
                                 child: GestureDetector(
                                   onTap: () async {
-                                    changeName(_emailField, _emailField);
+                                    changeValue(_emailField, _emailField);
                                     getUser();
                                   },
                                   child: ListTile(
@@ -224,7 +317,7 @@ class _UserProfilState extends State<UserProfil> {
                                 padding: const EdgeInsets.all(10),
                                 child: GestureDetector(
                                   onTap: () async {
-                                    changeName(_passwordField, _passwordField);
+                                    changeValue(_passwordField, _passwordField);
                                     getUser();
                                   },
                                   child: ListTile(
@@ -249,6 +342,12 @@ class _UserProfilState extends State<UserProfil> {
                                   onTap: () {
                                     setState(() {
                                       showInfo = !showInfo;
+                                      if (myProfil[0].ffe != null &&
+                                          myProfil[0].ffe != '') {
+                                        setState(() {
+                                          isCompleted = true;
+                                        });
+                                      }
                                     });
                                   },
                                   child: Row(
@@ -276,11 +375,12 @@ class _UserProfilState extends State<UserProfil> {
                           showInfo
                               ? SizedBox(
                                   width: 300,
+                                  height: 300,
                                   child: Column(children: <Widget>[
                                     Padding(
                                       padding: const EdgeInsets.all(10),
                                       child: TextFormField(
-                                        enabled: false,
+                                        controller: _agesField,
                                         decoration: const InputDecoration(
                                           border: OutlineInputBorder(
                                             borderRadius: BorderRadius.all(
@@ -293,6 +393,7 @@ class _UserProfilState extends State<UserProfil> {
                                     Padding(
                                       padding: const EdgeInsets.all(10),
                                       child: TextFormField(
+                                        controller: _phoneNumber,
                                         decoration: const InputDecoration(
                                           border: OutlineInputBorder(
                                             borderRadius: BorderRadius.all(
@@ -302,14 +403,14 @@ class _UserProfilState extends State<UserProfil> {
                                         ),
                                       ),
                                     ),
-                                    isCompleted
+                                    !isCompleted
                                         ? Padding(
                                             padding: const EdgeInsets.all(10),
                                             child: GestureDetector(
-                                              onTap: () {
-
-                                              },
+                                              onTap: () {},
                                               child: TextFormField(
+                                                onChanged: (value) =>
+                                                    _ffeField.text = value,
                                                 decoration:
                                                     const InputDecoration(
                                                   border: OutlineInputBorder(
@@ -325,30 +426,44 @@ class _UserProfilState extends State<UserProfil> {
                                           )
                                         : Padding(
                                             padding: const EdgeInsets.all(10),
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                launchUrl(youtubeUrl);
-                                              },
-                                              child: Text(
-                                                  'This is your FFE profil'),
-                                            ))
+                                            child: Column(
+                                              children: [
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    launchUrl(Uri.parse(
+                                                        _ffeField.text));
+                                                  },
+                                                  child: const Text(
+                                                      'This is your FFE profil'),
+                                                ),
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    changeValue(
+                                                        _ffeField, _ffeField);
+                                                  },
+                                                  child: const Icon(Icons.edit),
+                                                )
+                                              ],
+                                            )),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        addUserData();
+                                      },
+                                      child: const Text('Complete your profil'),
+                                    ),
                                   ]),
                                 )
                               : Container(),
                         ],
                       )))
-                ])
+                ]))
           : Center(
               child: Column(
-              //on click go back to main page
               children: [
                 const Text('You are not connected'),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const MyApp()),
-                    );
+                    Navigator.of(context).pop();
                   },
                   child: const Text('Go back to main page'),
                 ),
