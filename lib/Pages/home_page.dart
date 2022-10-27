@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import '../Components/nav.dart';
 // import "../Components/log_manager.dart";
 import 'package:carousel_slider/carousel_slider.dart';
@@ -29,8 +30,40 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
 
+    List userDate = [];
+
     getAllUsers() async {
-      var users = await widget.db.collection('users').find().toList();
+    // get users where creation_time exists in table users
+      var users = await widget.db.collection('users').find(mongo.where.exists('creation_date')).toList();
+      //only read users contains creation_date data
+
+      var dayNow = DateTime.now().millisecondsSinceEpoch;
+
+      print("dayNow");
+      print(dayNow);
+
+      //read create_date value of users
+      for (var user in users) {
+
+        var name = user['username'];
+
+        var dayUser = user['creation_date'];
+        print("dayUser");
+        print(dayUser);
+
+        var diff = dayNow - dayUser;
+        print("diff $name");
+        print(diff);
+
+        //return user with diff <= 86400000
+        if (diff <= 86400000) {
+          print("user");
+          print(user);
+          //add user to userDate
+          userDate.add(user);
+        }
+      }
+      print("userDate : $userDate");
       return users;
     }
 
@@ -49,46 +82,84 @@ class _MyHomePageState extends State<MyHomePage> {
         // ]
       ),
       drawer: DrawerWidget(),
-      body: FutureBuilder(
-        future: getAllUsers(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            return CarouselSlider(
-              options: CarouselOptions(
-                height: 300.0,
-                autoPlay: true,
-                autoPlayInterval: const Duration(seconds: 3),
-                autoPlayAnimationDuration: const Duration(milliseconds: 800),
-                autoPlayCurve: Curves.fastOutSlowIn,
-                enlargeCenterPage: true,
-                scrollDirection: Axis.horizontal,
+      body: Center(
+        child: Column(
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(20.0),
+              child: Text(
+                "Nouveauté de la journée : ",
+                style: TextStyle(fontSize: 20.0, decoration: TextDecoration.underline),
               ),
-              items: snapshot.data.map<Widget>((user) {
-                return Builder(
-                  builder: (BuildContext context) {
-                    return Container(
-                      width: MediaQuery.of(context).size.width,
-                      margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                      ),
-                      child: Column(
-                        children: [
-                          Image.network(imgList[0]),
-                          Text(user['username'], style: const TextStyle(fontSize: 16.0, color: Colors.black)),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              }).toList(),
-            );
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
+            ),
+            FutureBuilder(
+              future: getAllUsers(),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData) {
+                  return CarouselSlider(
+                    options: CarouselOptions(
+                      height: 390.0,
+                      autoPlay: false,
+                      autoPlayInterval: const Duration(seconds: 3),
+                      autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                      autoPlayCurve: Curves.fastOutSlowIn,
+                      enlargeCenterPage: true,
+                      scrollDirection: Axis.horizontal,
+                    ),
+                    items: userDate.map<Widget>((user) {
+
+                      if (user['creation_date'] != null) {
+
+                        // var dayNow = DateTime.now().millisecondsSinceEpoch;
+                        // var dayUser = snapshot.data[6]['creation_date'];
+                        //
+                        // print("Date Now : ${DateTime.now().millisecondsSinceEpoch}");
+                        // print("Date User : ${snapshot.data[6]['creation_date']}");
+                        //
+                        // print(dayNow - dayUser);
+                        //
+                        // if (dayNow - dayUser <= 86400) {
+                          return Builder(
+                            builder: (BuildContext context) {
+                              return Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height,
+                                margin: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 30.0),
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                ),
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.vertical,
+                                  child: Column(
+                                    children: [
+                                      Image.network(imgList[0]),
+                                      Text(user['username'], style: const TextStyle(fontSize: 16.0, color: Colors.black)),
+                                      Text(user['email'], style: const TextStyle(fontSize: 16.0, color: Colors.black)),
+                                      Text(user['password'], style: const TextStyle(fontSize: 16.0, color: Colors.black)),
+                                      Text(user['creation_date'].toString(), style: const TextStyle(fontSize: 16.0, color: Colors.black)),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        // } else {
+                        //   return Image.network(imgList[0]);
+                        // }
+                      }else {
+                        return const Text("");
+                      }
+                    }).toList(),
+                  );
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

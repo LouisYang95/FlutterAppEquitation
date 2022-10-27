@@ -8,6 +8,7 @@ class MongoDataBase {
     await db.open();
     inspect(db);
     var status = db.serverStatus();
+
     // print(status);
     // var collection = db.collection(COLLECTION_USERS);
     // print(await collection.find().toList());
