@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_equitation/Pages/event_page.dart';
 
 // Import all pages
 import 'package:flutter_app_equitation/Pages/home_page.dart';
 import 'package:flutter_app_equitation/Pages/login_page.dart';
 import 'package:flutter_app_equitation/Pages/register_page.dart';
 import 'package:flutter_app_equitation/Pages/bonus_page.dart';
+
 import 'package:flutter_app_equitation/Pages/admin_page.dart';
 import 'package:flutter_app_equitation/Pages/profile_page.dart';
 import 'package:flutter_app_equitation/Pages/forgot_pass_page.dart';
@@ -39,6 +41,7 @@ class MyApp extends StatelessWidget {
         '/register': (context) => RegisterPage(db: db),
         '/contest': (context) => CreateContestPage(db: db),
         '/class': (context) => CreateClassPage(db: db),
+        '/event': (context) => CreateEventPage(db: db),
         '/admin': (context) => AdminPage(db: db),
         '/forgot_password': (context) => ForgotPasswordPage(db: db),
         '/profil': (context) => UserProfil(db: db),
