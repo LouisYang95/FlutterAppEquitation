@@ -15,6 +15,9 @@ class _MyEventPageState extends State<MyEventPage> {
   /* set default value for the dropDownButton */
   String dropdownValue = 'Type of the Class';
 
+  /* Display button if data in the inputs is correct */
+  bool isValid = false;
+
   final _formKey = GlobalKey<FormState>();
 
   @override
