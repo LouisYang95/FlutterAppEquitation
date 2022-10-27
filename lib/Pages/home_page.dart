@@ -1,24 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_equitation/Pages/event_page.dart';
+import '../Components/nav.dart';
+
+import "../Components/log_manager.dart";
+
+
 
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  // Const homepage with title and db
+  MyHomePage({super.key, required this.title, this.db});
 
   final String title;
+  final db;
+
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   @override
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        // Make me a logout button if user is logged and a login/register button if he's not
+        actions: [
+          LogManager(db: widget.db),
+        ]
+
       ),
+      drawer: DrawerWidget(db: widget.db),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

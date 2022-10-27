@@ -37,6 +37,12 @@ dependencies:
   cupertino_icons: ^1.0.2
   mongo_dart: ^0.7.4+1
 
+  image_picker: 0.8.6
+  flutter_session_manager: ^1.0.3
+
+  intl: ^0.17.0
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
