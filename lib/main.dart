@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 
+
+
+
 // Import all pages
 import 'package:flutter_app_equitation/Pages/home_page.dart';
 import 'package:flutter_app_equitation/Pages/login_page.dart';
 import 'package:flutter_app_equitation/Pages/register_page.dart';
 import 'package:flutter_app_equitation/Pages/bonus_page.dart';
-import 'package:flutter_app_equitation/Pages/bonus_page.dart';
+import 'package:flutter_app_equitation/Pages/admin_page.dart';
+import 'package:flutter_app_equitation/Pages/profile_page.dart';
+import 'package:flutter_app_equitation/Pages/forgot_pass_page.dart';
 import 'package:flutter_app_equitation/Pages/class_page.dart';
 import 'package:flutter_app_equitation/Pages/contest_page.dart';
+
 
 // import Mongo.dart file
 import 'Mongo.dart';
@@ -37,6 +43,9 @@ class MyApp extends StatelessWidget {
         '/register': (context) => RegisterPage(db: db),
         '/constest': (context) => CreateContestPage(db: db),
         '/class': (context) => CreateClassPage(db: db),
+        '/admin': (context) => AdminPage(db: db),
+        '/forgot_password' : (context) => ForgotPasswordPage(db: db),
+
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,
