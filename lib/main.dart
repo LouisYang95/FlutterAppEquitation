@@ -29,6 +29,20 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
+    MaterialColor colorCustom = MaterialColor(const Color.fromRGBO(248,105,58, 1).value, const <int, Color>{
+      50:Color.fromRGBO(248,105,58, .1),
+      100:Color.fromRGBO(248,105,58, .2),
+      200:Color.fromRGBO(248,105,58, .3),
+      300:Color.fromRGBO(248,105,58, .4),
+      400:Color.fromRGBO(248,105,58, .5),
+      500:Color.fromRGBO(248,105,58, .6),
+      600:Color.fromRGBO(248,105,58, .7),
+      700:Color.fromRGBO(248,105,58, .8),
+      800:Color.fromRGBO(248,105,58, .9),
+      900:Color.fromRGBO(248,105,58, 1.0),
+    });
+
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
@@ -44,7 +58,7 @@ class MyApp extends StatelessWidget {
         '/profil': (context) => UserProfil(db: db),
       },
       theme: ThemeData(
-        primarySwatch: Colors.orange,
+        primarySwatch: colorCustom,
         scaffoldBackgroundColor: Colors.white.withAlpha(12000),
       ),
     );
