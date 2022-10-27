@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_equitation/Pages/event_page.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
 
 // Import all pages
 import 'package:flutter_app_equitation/Pages/home_page.dart';
+import 'package:flutter_app_equitation/Pages/horse_page.dart';
 import 'package:flutter_app_equitation/Pages/login_page.dart';
 import 'package:flutter_app_equitation/Pages/register_page.dart';
 import 'package:flutter_app_equitation/Pages/bonus_page.dart';
-
+import 'package:flutter_app_equitation/Pages/event_page.dart';
 import 'package:flutter_app_equitation/Pages/admin_page.dart';
 import 'package:flutter_app_equitation/Pages/profile_page.dart';
 import 'package:flutter_app_equitation/Pages/forgot_pass_page.dart';
@@ -56,6 +56,7 @@ class MyApp extends StatelessWidget {
         '/forgot_password' : (context) => ForgotPasswordPage(db: db),
         '/all_events' : (context) => AllEventsPage(db: db),
         '/profil': (context) => UserProfil(db: db),
+        '/horses': (context) => HorsePage(db: db),
       },
       theme: ThemeData(
         primarySwatch: Colors.orange,
