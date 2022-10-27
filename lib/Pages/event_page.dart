@@ -22,7 +22,7 @@ class _MyEventPageState extends State<MyEventPage> {
 
   void createClass() {
     var c = Class(dropdownValue);
-    widget.db.collection('lessons').insertOne(<String, dynamic>{
+    widget.db.collection('parties').insertOne(<String, dynamic>{
       
     });
   }
