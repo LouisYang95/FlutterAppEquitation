@@ -5,6 +5,8 @@ import 'package:flutter_app_equitation/Pages/home_page.dart';
 import 'package:flutter_app_equitation/Pages/login_page.dart';
 import 'package:flutter_app_equitation/Pages/register_page.dart';
 import 'package:flutter_app_equitation/Pages/bonus_page.dart';
+import 'package:flutter_app_equitation/Pages/admin_page.dart';
+import 'package:flutter_app_equitation/Pages/profile_page.dart';
 
 // import Mongo.dart file
 import 'Mongo.dart';
@@ -32,6 +34,7 @@ class MyApp extends StatelessWidget {
         '/bonus': (context) => BonusPage(title:'Bonus Page'),
         '/login': (context) => LoginPage(db: db),
         '/register': (context) => RegisterPage(db: db),
+        '/admin': (context) => AdminPage(db: db),
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,
