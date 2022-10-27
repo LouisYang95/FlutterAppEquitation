@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../Components/nav.dart';
+import 'package:mongo_dart/mongo_dart.dart' as mongo;
+import 'package:flutter_session_manager/flutter_session_manager.dart';
 
 class Class {
   final String land;
@@ -48,7 +49,19 @@ class CreateClassPageState extends State<CreateClassPage> {
 /* Display button if data in the inputs is correct */
   bool isValid = false;
 
-  void createClass() {
+  // Let user_id be the id of the user who created the class
+  getUserId() async {
+    var user_id = await SessionManager().get("id");
+    // Transform it to objectId and search it in the database
+   var objectId = mongo.ObjectId.fromHexString(user_id);
+    var user = await widget.db.collection('users').findOne({"_id": objectId});
+    return user['_id'];
+  }
+
+
+
+
+  Future<void> createClass() async {
     String formattedDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
     var c = Class(land, date.text, hour.text, duration, dropdownValue);
     widget.db.collection('lessons').insertOne(<String, dynamic>{
@@ -57,7 +70,8 @@ class CreateClassPageState extends State<CreateClassPage> {
       'when': c.hour,
       'duration': c.duration,
       'type': c.sport,
-      'pending': true,
+      'status': "pending",
+      'user': await getUserId(),
       'creation_date': DateTime.now().millisecondsSinceEpoch,
       'creation_real_date': formattedDate
     });
@@ -70,31 +84,15 @@ class CreateClassPageState extends State<CreateClassPage> {
       appBar: AppBar(
         title: const Text('🐴 BabacHorse '),
       ),
-      drawer: DrawerWidget(db: widget.db),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(40.0),
-            child: Center(
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(10.0),
-                    color: Color.fromRGBO(248,105,58, 1),
-                    child: const Text("New Lesson", style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
-                        fontStyle: FontStyle.italic,
-                        fontSize: 36)),
-                  ),
-                  Form(
-                    key: _formKey,
-                    onChanged: () {
-                      setState(() {
-                        isValid = _formKey.currentState!.validate();
-                      });
-                    },
-                    child: Column(
+      body: Center(
+        child: Form(
+          key: _formKey,
+          onChanged: () {
+            setState(() {
+              isValid = _formKey.currentState!.validate();
+            });
+          },
+          child: Column(
                       children: [
                         Container(
                           padding: const EdgeInsets.only(left: 80.0, top: 40.0, bottom: 10.0),
@@ -156,14 +154,9 @@ class CreateClassPageState extends State<CreateClassPage> {
                                 });
                               }
                             }),
+
                         const SizedBox(height: 20.0),
-                        // const Padding(
-                        //   padding: EdgeInsets.only(top: 30.0, bottom: 10.0),
-                        //   child: Text(
-                        //     "Hour : ",
-                        //     style: TextStyle(fontSize: 25.0, decoration: TextDecoration.underline),
-                        //   ),
-                        // ),
+
                         TextFormField(
                             controller: hour,
                             decoration: const InputDecoration(
@@ -226,6 +219,7 @@ class CreateClassPageState extends State<CreateClassPage> {
                             ],
                           ),
                         ),
+
                         DropdownButtonFormField<String>(
                           dropdownColor: const Color.fromARGB(245, 215, 194, 239),
                           value: dropdownValue,
@@ -254,6 +248,7 @@ class CreateClassPageState extends State<CreateClassPage> {
                                 value: 'Endurance', child: Text('Endurance')),
                           ],
                         ),
+
                         Container(
                             padding: const EdgeInsets.only(left: 0.0, top: 40.0),
                             child: ElevatedButton(
@@ -262,13 +257,8 @@ class CreateClassPageState extends State<CreateClassPage> {
                             )),
                       ],
                     ),
-                  ),
-                ],
               ),
             ),
-          ),
-        ],
-      ),
     );
   }
 }

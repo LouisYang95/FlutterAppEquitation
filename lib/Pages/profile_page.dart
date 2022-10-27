@@ -111,7 +111,6 @@ class _UserProfilState extends State<UserProfil> {
                         ),
                   ElevatedButton(
                     onPressed: () {
-                      print(variable);
                       defineNewValue(variable, controller);
                     },
                     child: const Text('change'),
@@ -126,7 +125,6 @@ class _UserProfilState extends State<UserProfil> {
     var id = mongo.ObjectId.fromHexString(idUser);
     var user =
         await widget.db.collection('users').findOne(mongo.where.eq('_id', id));
-    print(user);
     Users me = Users(
       name: user['username'],
       email: user['email'],
@@ -154,7 +152,6 @@ class _UserProfilState extends State<UserProfil> {
             .set('username', _nameField.text)
             .set('email', _emailField.text)
             .set('password', _passwordField.text));
-    print(update);
   }
 
   @override
@@ -309,7 +306,7 @@ class _UserProfilState extends State<UserProfil> {
                                             padding: const EdgeInsets.all(10),
                                             child: GestureDetector(
                                               onTap: () {
-                                                print('ok');
+
                                               },
                                               child: TextFormField(
                                                 decoration:

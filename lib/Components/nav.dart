@@ -13,6 +13,14 @@ class DrawerWidget extends StatelessWidget {
     // Get the user using SessionManager().get(id)
     var logo = "https://cdn.discordapp.com/attachments/930039778332786718/1035170994597396530/playstore.png";
 
+    getUser() async {
+    var id = await SessionManager().get('id');
+    // Id to ObjectId
+    var objectId = ObjectId.fromHexString(id);
+    var user = await db.collection('users').findOne(where.eq('_id', objectId));
+    return user;
+    }
+
 
     return Container(
       width: 200,
@@ -36,12 +44,7 @@ class DrawerWidget extends StatelessWidget {
             ),
 
             Image.network(logo),
-            ListTile(
-            title: const Text('Home'),
-            onTap: () {
-              Navigator.pushNamed(context, '/');
-            },
-            ),
+
             ListTile(
               title: const Text('Profile'),
               onTap: () {

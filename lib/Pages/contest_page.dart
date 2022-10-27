@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_session_manager/flutter_session_manager.dart';
 import 'package:intl/intl.dart';
-import '../Components/nav.dart';
+import 'package:mongo_dart/mongo_dart.dart' as mongo;
 
 class Contest {
   final String name;
@@ -35,13 +36,22 @@ class CreateContestPageState extends State<CreateContestPage> {
 /* Display button if data in the inputs is correct */
   bool isValid = false;
 
-  void createContest() {
+  getUserId() async {
+    var user_id = await SessionManager().get("id");
+    // Transform it to objectId and search it in the database
+    var objectId = mongo.ObjectId.fromHexString(user_id);
+    var user = await widget.db.collection('users').findOne({"_id": objectId});
+    return user['_id'];
+  }
+
+  Future<void> createContest() async {
     var c = Contest(name.text, address.text, picture.text, date.text);
     widget.db.collection('contests').insertOne(<String, dynamic>{
       'name': c.name,
       'address': c.address,
-      'picture': c.picture,
+      'photo': c.picture,
       'date': c.date,
+      'user': await getUserId(),
       'creation_date': DateTime.now().millisecondsSinceEpoch,
     });
     Navigator.pushNamed(context, '/');
@@ -58,7 +68,6 @@ class CreateContestPageState extends State<CreateContestPage> {
       appBar: AppBar(
         title: const Text('🐴 BabacHorse '),
       ),
-      drawer: DrawerWidget(db: widget.db),
       body: Center(
         child: Column(
           children: [
