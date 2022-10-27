@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_equitation/Pages/bonus_page.dart';
-
 import 'Pages/home_page.dart';
 
 // import Mongo.dart file
@@ -26,12 +25,14 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: {BonusPage.tag : (context)=>const BonusPage(title: 'Bonus')},
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.orange,
       ),
       // Write elements of db
       home: MyHomePage(title: '🏠 Home Page', db: db),
     );
   }
 }
+
+
 
 
