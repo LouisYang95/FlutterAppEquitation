@@ -28,7 +28,7 @@ class _MyLoginState extends State<LoginPage> {
         setState(() {
           session.set('id', value[0]['_id']);
           session.set('isLogged', true);
-          session.set('isAdmin', value[0]['isAdmin']);
+          session.set('isAdmin', value[0]['is_admin']);
         });
         Navigator.pushNamed(context, '/');
       } else {

@@ -14,11 +14,12 @@ class LogManager extends StatefulWidget {
 class _LogManagerState extends State<LogManager> {
 
   Future<bool> isLogged() async {
+
     var isLogged = await SessionManager().get('isLogged');
     if (isLogged == null || isLogged == false) {
       return false;
     } else {
-      return false;
+      return true;
     }
   }
 
