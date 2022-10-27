@@ -38,7 +38,8 @@ class _LogManagerState extends State<LogManager> {
               onPressed: () {
                 setState(() {
                   session.set('isLogged', false);
-                  session.set('id', null);
+                  session.set('id', '');
+                  print(session.set('id', ''));
                 });
                 Navigator.pushNamed(context, '/login');
               },
