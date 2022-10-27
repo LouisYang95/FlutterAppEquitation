@@ -75,7 +75,8 @@ class _MyEventPageState extends State<MyEventPage> {
               items: const <DropdownMenuItem<String>>[
                 DropdownMenuItem(
                     value: 'Theme nights',
-                    child: Text('Theme night')),
+                    child: Text('Theme night')
+                ),
                 DropdownMenuItem(value: 'Aperitif', child: Text('Aperitif')),
                 DropdownMenuItem(
                     value: 'Meals', child: Text('Meals')),
