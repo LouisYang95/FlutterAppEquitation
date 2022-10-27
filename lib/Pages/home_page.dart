@@ -87,6 +87,22 @@ class _MyHomePageState extends State<MyHomePage> {
       return lessons;
     }
 
+    getAllParties() async {
+      // get users where creation_time exists in table users
+      var parties = await widget.db.collection('parties').find(mongo.where.exists('creation_date')).toList();
+      //read create_date value of users
+      for (var party in parties) {
+        var dayParty = party['creation_date'];
+        var diff = dayNow - dayParty;
+        //return user with diff <= 86400000
+        if (diff <= 86400000) {
+          //add user to userDate
+          partyDate.add(party);
+        }
+      }
+      return parties;
+    }
+
     // In the slider we want into the carousel slider widget one of the images and one of the user names
     // We want to do this for every user in the database
     // So we need to get all the users from the database
@@ -114,6 +130,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   style: TextStyle(fontSize: 25.0, decoration: TextDecoration.underline),
                 ),
               ),
+
+              //Users
               const Padding(
                 padding: EdgeInsets.all(1.0),
                 child: Text(
@@ -172,6 +190,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   }
                 },
               ),
+
+              //Contests
               const Padding(
                 padding: EdgeInsets.all(1.0),
                 child: Text(
@@ -230,6 +250,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   }
                 },
               ),
+
+              //Lessons
               const Padding(
                 padding: EdgeInsets.all(1.0),
                 child: Text(
@@ -272,6 +294,66 @@ class _MyHomePageState extends State<MyHomePage> {
                                     const Text("New Lesson !", style: const TextStyle(fontSize: 20.0, color: Colors.black, fontWeight: FontWeight.bold)),
                                     const SizedBox(height: 10.0),
                                     Text(user['land'], style: const TextStyle(fontSize: 16.0, color: Colors.black, decoration: TextDecoration.underline)),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
+
+                      }).toList(),
+                    );
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                },
+              ),
+
+              //Parties
+              const Padding(
+                padding: EdgeInsets.all(1.0),
+                child: Text(
+                  "Parties : ",
+                  style: TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold),
+                ),
+              ),
+              FutureBuilder(
+                future: getAllParties(),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.hasData) {
+                    return CarouselSlider(
+                      options: CarouselOptions(
+                        height: 310.0,
+                        autoPlay: (partyDate.length < 2 ? false : true),
+                        autoPlayInterval: const Duration(seconds: 3),
+                        autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                        autoPlayCurve: Curves.fastOutSlowIn,
+                        enlargeCenterPage: true,
+                        scrollDirection: Axis.horizontal,
+                        viewportFraction: 0.6,
+                      ),
+                      items: partyDate.map<Widget>((user) {
+
+                        return Builder(
+                          builder: (BuildContext context) {
+                            return Container(
+                              width: 300,
+                              height: 200,
+                              margin: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 30.0),
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                              ),
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.vertical,
+                                child: Column(
+                                  children: [
+                                    Image.network(imgList[3]),
+                                    const SizedBox(height: 10.0),
+                                    const Text("New Party !", style: const TextStyle(fontSize: 20.0, color: Colors.black, fontWeight: FontWeight.bold)),
+                                    const SizedBox(height: 10.0),
+                                    Text(user['theme'], style: const TextStyle(fontSize: 16.0, color: Colors.black, decoration: TextDecoration.underline)),
                                   ],
                                 ),
                               ),
