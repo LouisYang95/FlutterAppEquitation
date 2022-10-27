@@ -13,7 +13,7 @@ class _MyEventPageState extends State<MyEventPage> {
   List<String> menuItems = ['Aperitif', 'Meals'];
 
   /* set default value for the dropDownButton */
-  String dropdownValue = 'Type of the Class';
+  String dropdownValue = 'Theme night';
 
   /* Display button if data in the inputs is correct */
   bool isValid = false;
@@ -24,7 +24,7 @@ class _MyEventPageState extends State<MyEventPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Event'),
+        title: const Text('Theme night'),
       ),
       body: Center(
         child: Form(
@@ -34,8 +34,6 @@ class _MyEventPageState extends State<MyEventPage> {
               isValid = _formKey.currentState!.validate();
             });
           },
-
-        ),
         child: Column(
           children: [
             DropdownButtonFormField<String>(
@@ -45,7 +43,7 @@ class _MyEventPageState extends State<MyEventPage> {
               elevation: 16,
               style: const TextStyle(color: Colors.deepPurple),
               validator: (String? value) {
-                if (value == 'Type of the Class') {
+                if (value == 'Theme night') {
                   return "Type required";
                 }
                 return null;
@@ -57,14 +55,15 @@ class _MyEventPageState extends State<MyEventPage> {
               },
               items: const <DropdownMenuItem<String>>[
                 DropdownMenuItem(
-                    value: 'Type of the Class',
-                    child: Text('Type of the Class')),
+                    value: 'Theme nights',
+                    child: Text('Theme night')),
                 DropdownMenuItem(value: 'Aperitif', child: Text('Aperitif')),
                 DropdownMenuItem(
                     value: 'Meals', child: Text('Meals')),
               ],
             ),
           ],
+        ),
         ),
       ),
     );
