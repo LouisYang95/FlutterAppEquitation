@@ -16,7 +16,8 @@ class DrawerWidget extends StatelessWidget {
       var id = await SessionManager().get('id');
       // Id to ObjectId
       var objectId = ObjectId.fromHexString(id);
-      var user = await db.collection('users').findOne(where.eq('_id', objectId));
+      var user =
+          await db.collection('users').findOne(where.eq('_id', objectId));
       return user;
     }
 
@@ -31,10 +32,10 @@ class DrawerWidget extends StatelessWidget {
             child: Text('Navigation'),
           ),
           ListTile(
-          title: const Text('Bonus'),
-          onTap: () {
-            Navigator.pushNamed(context, '/bonus');
-          },
+            title: const Text('Bonus'),
+            onTap: () {
+              Navigator.pushNamed(context, '/bonus');
+            },
           ),
           ListTile(
             title: const Text('Profile'),
@@ -43,15 +44,15 @@ class DrawerWidget extends StatelessWidget {
             },
           ),
           ListTile(
-            title: const Text('Class'),
-            onTap: () {
-              Navigator.pushNamed(context, '/class');
-            },
-          ),
-          ListTile(
             title: const Text('Contest'),
             onTap: () {
               Navigator.pushNamed(context, '/contest');
+            },
+          ),
+          ListTile(
+            title: const Text('Class'),
+            onTap: () {
+              Navigator.pushNamed(context, '/class');
             },
           ),
           // Events
@@ -65,6 +66,12 @@ class DrawerWidget extends StatelessWidget {
             title: const Text('Dashboard'),
             onTap: () {
               Navigator.pushNamed(context, '/admin');
+            },
+          ),
+          ListTile(
+            title: const Text('Horses'),
+            onTap: () {
+              Navigator.pushNamed(context, '/horses');
             },
           ),
         ],
