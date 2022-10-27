@@ -6,9 +6,9 @@ class Event {
   final String theme;
   final String date;
   final String hour;
-  final String duration;
+  final String desc;
 
-  Event(this.theme, this.date, this.hour, this.duration);
+  Event(this.theme, this.date, this.hour, this.desc);
 }
 
 class CreateEventPage extends StatefulWidget {
@@ -24,33 +24,28 @@ class CreateEventPage extends StatefulWidget {
 
 enum Theme { aperitif, meals }
 
-enum DurationT { half, hour }
-
 class CreateEventPageState extends State<CreateEventPage> {
   String theme = 'Aperitif';
   final date = TextEditingController();
+  final desc = TextEditingController();
   final hour = TextEditingController();
-  String duration = '30 min';
 
   final _formKey = GlobalKey<FormState>();
 
   /* Set default value for radio input */
   Theme? _theme = Theme.aperitif;
-  DurationT? _duration = DurationT.half;
-
-
-
 
 /* Display button if data in the inputs is correct */
   bool isValid = false;
 
   void createClass() {
     String formattedDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
-    var c = Event(theme, date.text, hour.text, duration);
+    var c = Event(theme, date.text, hour.text, desc.text);
     widget.db.collection('parties').insertOne(<String, dynamic>{
       'theme': c.theme,
       'date': c.date,
       'when': c.hour,
+      'description': c.desc,
       'pending': true,
       'creation_date': DateTime.now().millisecondsSinceEpoch,
       'creation_real_date': formattedDate
@@ -122,12 +117,24 @@ class CreateEventPageState extends State<CreateEventPage> {
 
                     if (pickedDate != null) {
                       String formattedDate =
-                      DateFormat('dd-MM-yyyy').format(pickedDate);
+                          DateFormat('dd-MM-yyyy').format(pickedDate);
                       setState(() {
                         date.text = formattedDate;
                       });
                     }
                   }),
+              TextFormField(
+                controller: desc,
+                maxLines: 8,
+                decoration: const InputDecoration(
+                    icon: Icon(Icons.calendar_today), labelText: "Description"),
+                validator: (String? value) {
+                  if (value == null || value.isEmpty) {
+                    return "Description required";
+                  }
+                  return null;
+                },
+              ),
               const Text('Hour'),
               TextFormField(
                   controller: hour,
@@ -151,7 +158,7 @@ class CreateEventPageState extends State<CreateEventPage> {
                           .parse(pickedTime.format(context).toString());
 
                       String formattedTime =
-                      DateFormat('HH:mm').format(parsedTime);
+                          DateFormat('HH:mm').format(parsedTime);
 
                       setState(() {
                         hour.text = formattedTime;
