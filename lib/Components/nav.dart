@@ -16,7 +16,8 @@ class DrawerWidget extends StatelessWidget {
       var id = await SessionManager().get('id');
       // Id to ObjectId
       var objectId = ObjectId.fromHexString(id);
-      var user = await db.collection('users').findOne(where.eq('_id', objectId));
+      var user =
+          await db.collection('users').findOne(where.eq('_id', objectId));
       return user;
     }
 
@@ -31,10 +32,10 @@ class DrawerWidget extends StatelessWidget {
             child: Text('Navigation'),
           ),
           ListTile(
-          title: const Text('Bonus'),
-          onTap: () {
-            Navigator.pushNamed(context, '/bonus');
-          },
+            title: const Text('Bonus'),
+            onTap: () {
+              Navigator.pushNamed(context, '/bonus');
+            },
           ),
           ListTile(
             title: const Text('Profile'),
@@ -54,8 +55,14 @@ class DrawerWidget extends StatelessWidget {
               Navigator.pushNamed(context, '/contest');
             },
           ),
+          ListTile(
+            title: const Text('Contest'),
+            onTap: () {
+              Navigator.pushNamed(context, '/participate_contest');
+            },
+          ),
 
-            // Print infos of user
+          // Print infos of user
           FutureBuilder(
             future: getUser(),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
