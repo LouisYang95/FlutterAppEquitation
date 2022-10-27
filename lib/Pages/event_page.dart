@@ -25,7 +25,7 @@ class _MyEventPageState extends State<MyEventPage> {
   List<String> menuItems = ['Aperitif', 'Meals'];
 
   /* set default value for the dropDownButton */
-  String dropdownValue = 'Theme night';
+  String dropdownValue = 'Theme nights';
 
   /* Display button if data in the inputs is correct */
   bool isValid = false;
@@ -35,6 +35,7 @@ class _MyEventPageState extends State<MyEventPage> {
   void createClass() {
     var c = Class(dropdownValue);
     widget.db.collection('parties').insertOne(<String, dynamic>{
+      'theme': c.theme
       
     });
   }
