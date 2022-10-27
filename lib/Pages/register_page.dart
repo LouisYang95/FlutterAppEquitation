@@ -157,195 +157,147 @@ class _MyRegisterState extends State<RegisterPage> {
     }
 
 
-    return
-      Form(
+    return Form(
         key: _formKey,
         child: Container(
         child: Scaffold(
-          backgroundColor: Colors.white,
           appBar: AppBar(
-            backgroundColor: Colors.black,
-            elevation: 0,
+            title: const Text('🐴 BabacHorse '),
           ),
-          body: Stack(
-            children: [
-              SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.only(left: 10, top: 130, bottom: 40),
-                      child: Text(
-                        'Register \n Now',
-                        style: TextStyle(color: Colors.black, fontSize: 33),
-                      ),
-                    ),
-                    Container(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(left: 35, right: 35),
-                            child: Column(
-                              children: [
-                                TextFormField(
-                                  controller: _usernameController,
-                                  style: TextStyle(color: Colors.black),
-                                  decoration: InputDecoration(
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                      hintText: "Name",
-                                      hintStyle: TextStyle(color: Colors.black),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      )),
-                                ),
-                                SizedBox(
-                                  height: 30,
-                                ),
-                                TextFormField(
-                                  controller: _emailController,
-                                  style: TextStyle(color: Colors.black),
-                                  decoration: InputDecoration(
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                      hintText: "Email",
-                                      hintStyle: TextStyle(color: Colors.black),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      )),
-                                ),
-                                SizedBox(
-                                  height: 30,
-                                ),
-                                TextFormField(
-                                  controller: _passwordController,
-                                  style: TextStyle(color: Colors.black),
-                                  obscureText: true,
-                                  decoration: InputDecoration(
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                      hintText: "Password",
-                                      hintStyle: TextStyle(color: Colors.black),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      )),
-                                ),
-                                SizedBox(
-                                  height: 30,
-                                ),
-                                TextFormField(
-                                  controller: _profilePictureController,
-                                  style: TextStyle(color: Colors.black),
-                                  obscureText: true,
-                                  decoration: InputDecoration(
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                      hintText: "Link to Profile Picture",
-                                      hintStyle: TextStyle(color: Colors.black),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      )),
-                                ),
-                                SizedBox(
-                                  height: 40,
-                                ),
+          body: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Center(
+              child: Column(
+                children: [
+                  const SizedBox(height: 60.0),
+                  Container(
+                    padding: const EdgeInsets.all(10.0),
+                    color: const Color.fromRGBO(248,105,58, 1),
+                    child: const Text("Register Now", style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        fontStyle: FontStyle.italic,
+                        fontSize: 36)),
+                  ),
+                  const SizedBox(height: 60.0),
+                  Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(left: 35, right: 35),
+                          child: Column(
+                            children: [
+                              TextFormField(
+                                controller: _usernameController,
+                                style: const TextStyle(),
+                                decoration: InputDecoration(
+                                    fillColor: Colors.grey.shade100,
+                                    filled: true,
+                                    hintText: "Name",
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    )),
+                              ),
+                              const SizedBox(
+                                height: 30,
+                              ),
+                              TextFormField(
+                                controller: _emailController,
+                                style: const TextStyle(),
+                                decoration: InputDecoration(
+                                    fillColor: Colors.grey.shade100,
+                                    filled: true,
+                                    hintText: "Email",
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    )),
+                              ),
+                              const SizedBox(
+                                height: 30,
+                              ),
+                              TextFormField(
+                                controller: _passwordController,
+                                obscureText: true,
+                                style: const TextStyle(),
+                                decoration: InputDecoration(
+                                    fillColor: Colors.grey.shade100,
+                                    filled: true,
+                                    hintText: "Password",
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    )),
+                              ),
+                              const SizedBox(
+                                height: 30,
+                              ),
+                              TextFormField(
+                                controller: _profilePictureController,
+                                style: const TextStyle(),
+                                decoration: InputDecoration(
+                                    fillColor: Colors.grey.shade100,
+                                    filled: true,
+                                    hintText: "Link for Profile Picture",
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    )),
+                              ),
+                              const SizedBox(
+                                height: 40,
+                              ),
 
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Sign Up',
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
+                                    'Sign Up',
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 27,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                  CircleAvatar(
+                                    radius: 30,
+                                    child: IconButton(
+                                        color: Colors.white,
+                                        onPressed: () {
+                                          saveUser();
+                                        },
+                                        icon: const Icon(
+                                          Icons.arrow_forward,
+                                        )),
+                                  )
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pushNamed(context, '/login');
+                                    },
+                                    style: const ButtonStyle(),
+                                    child: const Text(
+                                      'Sign In',
                                       style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 27,
-                                          fontWeight: FontWeight.w700),
+                                          decoration: TextDecoration.underline,
+                                          fontSize: 18),
                                     ),
-                                    CircleAvatar(
-                                      radius: 30,
-                                      backgroundColor: Color(0xff4c505b),
-                                      child: IconButton(
-                                          color: Colors.white,
-                                          onPressed: () {
-                                            saveUser();
-                                          },
-                                          icon: Icon(
-                                            Icons.arrow_forward,
-                                          )),
-                                    )
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 40,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pushNamed(context, '/login');
-                                      },
-                                      child: Text(
-                                        'Sign In',
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                            decoration: TextDecoration.underline,
-                                            color: Colors.black,
-                                            fontSize: 18),
-                                      ),
-                                      style: ButtonStyle(),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
                     ),
-                  ]
-                ),
+                  ),
+                ]
               ),
-            ],
+            ),
           ),
         ),
       ),
