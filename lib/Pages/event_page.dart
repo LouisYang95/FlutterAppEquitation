@@ -59,6 +59,33 @@ class _MyEventPageState extends State<MyEventPage> {
           },
         child: Column(
           children: [
+            TextFormField(
+                controller: date,
+                decoration: const InputDecoration(
+                    icon: Icon(Icons.calendar_today),
+                    labelText: "Enter Date"),
+                readOnly: true,
+                validator: (String? value) {
+                  if (value == null || value.isEmpty) {
+                    return "Date required";
+                  }
+                  return null;
+                },
+                onTap: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2101));
+
+                  if (pickedDate != null) {
+                    String formattedDate =
+                    DateFormat('dd-MM-yyyy').format(pickedDate);
+                    setState(() {
+                      date.text = formattedDate;
+                    });
+                  }
+                }),
             DropdownButtonFormField<String>(
               dropdownColor: const Color.fromARGB(245, 215, 194, 239),
               value: dropdownValue,
