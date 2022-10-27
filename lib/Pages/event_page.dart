@@ -21,6 +21,7 @@ class MyEventPage extends StatefulWidget {
 }
 
 class _MyEventPageState extends State<MyEventPage> {
+  final date = TextEditingController();
 
   /* set possible values for dropDownButton */
   List<String> menuItems = ['Aperitif', 'Meals'];
