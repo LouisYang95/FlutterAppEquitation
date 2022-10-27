@@ -11,6 +11,15 @@ class LogManager extends StatefulWidget {
 }
 
 class _LogManagerState extends State<LogManager> {
+  Future<bool> isLogged() async {
+    var isLogged = await SessionManager().get('isLogged');
+    if (isLogged == null || isLogged == true) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   // Use session.get('isLogged').then((value)
   // to check if user is logged or not
   // Use session.get('id').then((value)
@@ -20,7 +29,7 @@ class _LogManagerState extends State<LogManager> {
   Widget build(BuildContext context) {
     var session = SessionManager();
     return FutureBuilder(
-      future: session.get('isLogged'),
+      future: isLogged(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data == true) {

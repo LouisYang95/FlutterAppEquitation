@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_equitation/Pages/event_page.dart';
 
-
-
-
 // Import all pages
 import 'package:flutter_app_equitation/Pages/home_page.dart';
 import 'package:flutter_app_equitation/Pages/login_page.dart';
@@ -15,7 +12,6 @@ import 'package:flutter_app_equitation/Pages/profile_page.dart';
 import 'package:flutter_app_equitation/Pages/forgot_pass_page.dart';
 import 'package:flutter_app_equitation/Pages/class_page.dart';
 import 'package:flutter_app_equitation/Pages/contest_page.dart';
-
 
 // import Mongo.dart file
 import 'Mongo.dart';
@@ -51,7 +47,8 @@ class MyApp extends StatelessWidget {
 
       },
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.orange,
+        scaffoldBackgroundColor: Colors.white.withAlpha(12000),
       ),
     );
   }
