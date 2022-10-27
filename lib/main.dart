@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       routes: {BonusPage.tag : (context)=>const BonusPage(title: 'Bonus'),
-        MyEventPage.tag : (context)=>MyEventPage()
+        MyEventPage.tag : (context)=>MyEventPage(db:db)
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,

@@ -79,7 +79,8 @@ class _MyEventPageState extends State<MyEventPage> {
                 ),
                 DropdownMenuItem(value: 'Aperitif', child: Text('Aperitif')),
                 DropdownMenuItem(
-                    value: 'Meals', child: Text('Meals')),
+                    value: 'Meals', child: Text('Meals')
+                ),
               ],
             ),
             Container(
