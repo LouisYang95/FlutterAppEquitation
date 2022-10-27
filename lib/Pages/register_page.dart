@@ -14,12 +14,14 @@ class _MyRegisterState extends State<RegisterPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _emailController = TextEditingController();
+  final _profil = TextEditingController();
   @override
   Widget build(BuildContext context) {
     saveUser() {
       final String username = _usernameController.text.trim();
       final String password = _passwordController.text.trim();
       final String email = _emailController.text.trim();
+      final String profil = _profil.text.trim();
 
       // If the form is valid, save the user in the database
       if (username != '' && password != '' && email != '') {
@@ -255,6 +257,28 @@ class _MyRegisterState extends State<RegisterPage> {
                             SizedBox(
                               height: 40,
                             ),
+                            TextFormField(
+                              style: TextStyle(color: Colors.black),
+                              obscureText: true,
+                              decoration: InputDecoration(
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  hintText: "Profil_picture",
+                                  hintStyle: TextStyle(color: Colors.black),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  )),
+                            ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -300,7 +324,7 @@ class _MyRegisterState extends State<RegisterPage> {
                                   style: ButtonStyle(),
                                 ),
                               ],
-                            )
+                            ),
                           ],
                         ),
                       )
