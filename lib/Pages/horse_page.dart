@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_session_manager/flutter_session_manager.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 
 class HorsePage extends StatefulWidget {
@@ -19,7 +20,107 @@ class HorsePageState extends State<HorsePage> {
     return horses;
   }
 
-  getList(data) {}
+  becomeFullOwner(horseId) async {
+    var session = SessionManager();
+    var userId = await session.get('id');
+    if (userId != '') {
+      var objectId = mongo.ObjectId.parse(userId);
+
+
+      // Add the horse to the user's list of horses
+      await widget.db.collection('users').update(
+          mongo.where.id(objectId),
+          mongo.modify
+              .push('horses', [horseId, 'full']));
+
+
+      // Set the horse as unavailable
+
+      await widget.db.collection('horses').update(
+          mongo.where.id(horseId),
+          mongo.modify.set('is_available', false)
+              .set('owner', objectId)
+              .set('state', 'full'));
+
+      // SetState
+      setState(() {});
+    } else {
+      Navigator.pushNamed(context, '/login');
+    }
+  }
+
+
+  checkIfPart(horseId) async {
+    var horse = await widget.db.collection('horses').findOne(mongo.where.id(horseId));
+
+    if (await horse['state'] == null || await horse['state'] != 'part') {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+becomePartOwner(horseId) async {
+    var session = SessionManager();
+    var userId = await session.get('id');
+    if (userId != '') {
+      var objectId = mongo.ObjectId.parse(userId);
+
+
+      // Set the horse as unavailable if there are two owners, otherwise just add the owne and set the state to part
+      // If there are two owners, set the horse as unavailable
+      var horse = await widget.db.collection('horses').findOne(mongo.where.id(horseId));
+      if (await horse['owners'] == null) {
+        await widget.db.collection('users').update(
+            mongo.where.id(objectId),
+            mongo.modify
+                .push('horses', [horseId, 'part']));
+
+        await widget.db.collection('horses').update(
+            mongo.where.id(horseId),
+            mongo.modify.set('is_available', false)
+                .set('owners', [objectId])
+                .set('state', 'part'));
+      } else {
+        if (await horse['owners'].length == 1 &&
+            await horse['owners'][0] == objectId) {
+          var popup = showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                return const AlertDialog(
+                  title: Text("Error", style: TextStyle(color: Colors.red)),
+                  content: Text("You are already an owner of this horse"),
+                );
+              });
+          Future.delayed(const Duration(seconds: 2), () {
+            Navigator.of(context).pop();
+          });
+          return popup;
+        }
+        if (await horse['owners'].length == 2) {
+          await widget.db.collection('horses').update(
+              mongo.where.id(horseId),
+              mongo.modify.set('is_available', false));
+        } else if (await horse['owners'].length < 2) {
+          await widget.db.collection('users').update(
+              mongo.where.id(objectId),
+              mongo.modify
+                  .push('horses', [horseId, 'part']));
+
+          await widget.db.collection('horses').update(
+              mongo.where.id(horseId),
+              mongo.modify.set('state', 'part')
+                  .push('owners', objectId));
+          }
+        }
+
+      // SetState
+      setState(() {});
+    } else {
+      Navigator.pushNamed(context, '/login');
+    }
+  }
 
 
 
@@ -38,55 +139,85 @@ class HorsePageState extends State<HorsePage> {
                       itemCount: snapshot.data.length,
                       itemBuilder: ((context, int index) {
                         return Center(
-                          child: Card(
-                              elevation: 4.0,
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 10.0),
-                                child: Column(
+                          child: Column(children: [
+                            Container(
+                              margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                              child:
+                                  Image.network(snapshot.data[index]['photo']),
+                            ),
+                            Text(snapshot.data[index]['name'],
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 30)),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Text(snapshot.data[index]['genre'],
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20)),
+                                Text('${snapshot.data[index]['age']} years old',
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20)),
+                              ],
+                            ),
+                            Container(
+                                margin: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
                                   children: [
-                                    ListTile(
-                                      title: Container(
-                                        margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-                                        child: Text(snapshot.data[index]['name'],
-                                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 30)
-                                        ),
-                                      ),
-                                      subtitle: Row(
-                                        children: [
-                                          Text(snapshot.data[index]['genre'],),
-                                          const SizedBox(width: 20.0),
-                                          Text('${snapshot.data[index]['age']} year'),
-                                        ],
-                                      ),
-                                      trailing: Icon(Icons.favorite_outline),
-                                    ),
-                                    Container(
-                                        height: 200.0,
-                                        child: Image.network(snapshot.data[index]['photo'], fit: BoxFit.cover)),
-                                    Container(
-                                        margin: const EdgeInsets.fromLTRB(0, 20, 0, 20),
-                                        child: Text(
-                                          snapshot.data[index]['description'],
-                                          textAlign: TextAlign.center,
-                                        )
-                                    ),
-                                    Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                        children: [
-                                          ElevatedButton(
-                                            onPressed: () {},
-                                            child: const Text('Become Owner'),
-                                          ),
-                                          ElevatedButton(
-                                            onPressed: () {},
-                                            child: const Text('Become Half Boarder'),
-                                          ),
-                                        ]
-                                    )
+                                    Text(snapshot.data[index]['breed']),
+                                    Text(snapshot.data[index]['speciality'].join(' - ')
+                                        .toString()),
                                   ],
-                                ),
-                              )),
+                                )),
+                            Container(
+                                margin: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+                                child: Text(
+                                  snapshot.data[index]['description'],
+                                  textAlign: TextAlign.center,
+                                )),
+                            Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  // ElevatedButton(
+                                  //   onPressed: () {
+                                  //     becomeFullOwner(snapshot.data[index]['_id']);
+                                  //   },
+                                  //   child: const Text('Become Owner'),
+                                  // ),
+                                  // FutureBuilder using checkIfPart to check if the horse is already part owned
+                                  FutureBuilder(
+                                      future: checkIfPart(
+                                          snapshot.data[index]['_id']),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot snapshot) {
+                                        if (snapshot.hasData) {
+                                          if (snapshot.data == false) {
+                                            return ElevatedButton(
+                                              onPressed: () {
+                                                becomePartOwner(
+                                                    snapshot.data[index]['_id']);
+                                              },
+                                              child: const Text('Become Owner'),
+                                            );
+                                          } else {
+                                            return Text('Already part owned');
+                                          }
+                                        } else {
+                                          return const CircularProgressIndicator();
+                                        }
+                                      }),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      becomePartOwner(snapshot.data[index]['_id']);
+                                    },
+                                    child: const Text('Become Part Owner'),
+                                  ),
+                                ])
+                          ]),
                         );
                       }));
                 } else {

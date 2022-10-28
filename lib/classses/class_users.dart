@@ -2,6 +2,7 @@ class Users {
   String name;
   String email;
   String password;
+  String? league;
   String? phone;
   String? ages;
   String? ffe;
@@ -11,6 +12,7 @@ class Users {
     required this.name,
     required this.email,
     required this.password,
+    this.league,
     this.phone,
     this.ages,
     this.ffe,

@@ -29,10 +29,10 @@ class _UserProfilState extends State<UserProfil> {
   final _photoUrl = TextEditingController();
 
   // Uri ffeUrl = Uri.parse('https://www.ffe.com/');
-  bool showInfo = false;
   bool isCompleted = false;
   List myProfil = [];
   bool isConnected = false;
+  List leagueList = [];
 
   Future<bool> isLogged() async {
     var isLogged = await SessionManager().get('isLogged');
@@ -151,6 +151,96 @@ class _UserProfilState extends State<UserProfil> {
     }
   }
 
+  showInfo() {
+    if (myProfil[0].ffe != null && myProfil[0].ffe != '') {
+      setState(() {
+        isCompleted = true;
+      });
+    }
+    print('ok');
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Information'),
+            content: const Text('Your informations'),
+            actions: [
+              SizedBox(
+                width: 300,
+                height: 300,
+                child: Column(children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: TextFormField(
+                      controller: _agesField,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                        ),
+                        labelText: 'ages',
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: TextFormField(
+                      controller: _phoneNumber,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                        ),
+                        labelText: 'Phone Number',
+                      ),
+                    ),
+                  ),
+                  !isCompleted
+                      ? Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: GestureDetector(
+                            onTap: () {},
+                            child: TextFormField(
+                              onChanged: (value) => _ffeField.text = value,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
+                                ),
+                                labelText: 'LINK TO YOUR FFE',
+                              ),
+                            ),
+                          ),
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Column(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  launchUrl(Uri.parse(_ffeField.text));
+                                },
+                                child: const Text('This is your FFE profil'),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  changeValue(_ffeField, _ffeField);
+                                },
+                                child: const Icon(Icons.edit),
+                              )
+                            ],
+                          )),
+                  ElevatedButton(
+                    onPressed: () {
+                      addUserData();
+                    },
+                    child: const Text('Complete your profil'),
+                  ),
+                ]),
+              )
+            ],
+          );
+        });
+  }
+
   changeValue(var variable, final controller) {
     showDialog(
         context: context,
@@ -259,7 +349,7 @@ class _UserProfilState extends State<UserProfil> {
                     onTap: () {
                       changeValue(_photoUrl, _photoUrl);
                     },
-                    child: _photoUrl != null
+                    child: _photoUrl != ''
                         ? CircleAvatar(
                             radius: 90,
                             backgroundImage: NetworkImage(_photoUrl.text),
@@ -336,123 +426,13 @@ class _UserProfilState extends State<UserProfil> {
                               ),
                             ]),
                           ),
-                          !showInfo
-                              ? GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      showInfo = !showInfo;
-                                      if (myProfil[0].ffe != null &&
-                                          myProfil[0].ffe != '') {
-                                        setState(() {
-                                          isCompleted = true;
-                                        });
-                                      }
-                                    });
-                                  },
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Icon(Icons.info, color: Colors.orange),
-                                      Text('show info'),
-                                      Icon(Icons.arrow_downward),
-                                    ],
-                                  ))
-                              : GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      showInfo = !showInfo;
-                                    });
-                                  },
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Icon(Icons.info, color: Colors.orange),
-                                      Text('hide info'),
-                                      Icon(Icons.arrow_upward),
-                                    ],
-                                  )),
-                          showInfo
-                              ? SizedBox(
-                                  width: 300,
-                                  height: 300,
-                                  child: Column(children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.all(10),
-                                      child: TextFormField(
-                                        controller: _agesField,
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(20)),
-                                          ),
-                                          labelText: 'ages',
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(10),
-                                      child: TextFormField(
-                                        controller: _phoneNumber,
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(20)),
-                                          ),
-                                          labelText: 'Phone Number',
-                                        ),
-                                      ),
-                                    ),
-                                    !isCompleted
-                                        ? Padding(
-                                            padding: const EdgeInsets.all(10),
-                                            child: GestureDetector(
-                                              onTap: () {},
-                                              child: TextFormField(
-                                                onChanged: (value) =>
-                                                    _ffeField.text = value,
-                                                decoration:
-                                                    const InputDecoration(
-                                                  border: OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                20)),
-                                                  ),
-                                                  labelText: 'LINK TO YOUR FFE',
-                                                ),
-                                              ),
-                                            ),
-                                          )
-                                        : Padding(
-                                            padding: const EdgeInsets.all(10),
-                                            child: Column(
-                                              children: [
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    launchUrl(Uri.parse(
-                                                        _ffeField.text));
-                                                  },
-                                                  child: const Text(
-                                                      'This is your FFE profil'),
-                                                ),
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    changeValue(
-                                                        _ffeField, _ffeField);
-                                                  },
-                                                  child: const Icon(Icons.edit),
-                                                )
-                                              ],
-                                            )),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        addUserData();
-                                      },
-                                      child: const Text('Complete your profil'),
-                                    ),
-                                  ]),
-                                )
-                              : Container(),
+                          // add button
+                          ElevatedButton(
+                            onPressed: () {
+                              showInfo();
+                            },
+                            child: const Text('Update'),
+                          ),
                         ],
                       )))
                 ]))
