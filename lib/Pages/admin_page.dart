@@ -6,10 +6,8 @@ import 'package:flutter_session_manager/flutter_session_manager.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import 'package:intl/intl.dart';
 
-
-
 class AdminPage extends StatefulWidget {
-  const AdminPage({super.key , this.db});
+  const AdminPage({super.key, this.db});
 
   final db;
   @override
@@ -38,7 +36,6 @@ class _MyAdminState extends State<AdminPage> {
     return parties;
   }
 
-
   // Get all horses
 
   getAllHorses() async {
@@ -58,55 +55,95 @@ class _MyAdminState extends State<AdminPage> {
     return owners;
   }
 
+  getLessonsUser() async {
+    List userL = [];
+    var userLessons;
+    var data = await getAllLessons();
+    var id = await SessionManager().get('id');
+    mongo.ObjectId mongodbid = mongo.ObjectId.parse(id);
+    for (var i = 0; i < data.length; i++) {
+      var userLessons =
+          await widget.db.collection('lessons_participations').find({
+        'user_id': mongodbid,
+        'lesson_id': await data[i]['_id'],
+      }).toList();
+      userL.add(userLessons);
+    }
+
+    for (var i = 0; i < userL.length; i++) {
+      var idL = await userL[i][i]["lesson_id"]; /* ... */
+      userLessons = await widget.db
+          .collection('lessons')
+          .find({'_id':  idL});
+    }
+    return userLessons;
+  }
 
   deleteUserButton(snapshot) async {
     // If user logged in is not admin, don't display delete button
-      if (await SessionManager().get('isAdmin') == true && await SessionManager().get('isLogged') == true && snapshot['is_admin'] == false) {
-        return IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () {
-             // Make a verification dialog
-              showDialog<void>(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('Delete user'),
-                      content: const Text('Are you sure you want to delete this user ?'),
-                      actions: <Widget>[
-                        TextButton(
-                          child: const Text('Yes'),
-                          onPressed: () {
-                            widget.db.collection('users').deleteOne(mongo.where.eq('_id', snapshot['_id']));
-                            widget.db.collection('lessons').deleteMany(mongo.where.eq('user', snapshot['_id']));
-                            widget.db.collection('parties').deleteMany(mongo.where.eq('user', snapshot['_id']));
-                            widget.db.collection('contests').deleteMany(mongo.where.eq('user', snapshot['_id']));
-                            widget.db.collection('contests_participations').deleteMany(mongo.where.eq('user_id', snapshot['_id']));
-                            widget.db.collection('parties_participations').deleteMany(mongo.where.eq('user_id', snapshot['_id']));
-                            widget.db.collection('lessons_participations').deleteMany(mongo.where.eq('user_id', snapshot['_id']));
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        TextButton(
-                          child: const Text('No'),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ],
-                    );
-                  });
-            });
-      } else {
-        return Container();
-      }
+    if (await SessionManager().get('isAdmin') == true &&
+        await SessionManager().get('isLogged') == true &&
+        snapshot['is_admin'] == false) {
+      return IconButton(
+          icon: const Icon(Icons.delete),
+          onPressed: () {
+            // Make a verification dialog
+            showDialog<void>(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('Delete user'),
+                    content: const Text(
+                        'Are you sure you want to delete this user ?'),
+                    actions: <Widget>[
+                      TextButton(
+                        child: const Text('Yes'),
+                        onPressed: () {
+                          widget.db.collection('users').deleteOne(
+                              mongo.where.eq('_id', snapshot['_id']));
+                          widget.db.collection('lessons').deleteMany(
+                              mongo.where.eq('user', snapshot['_id']));
+                          widget.db.collection('parties').deleteMany(
+                              mongo.where.eq('user', snapshot['_id']));
+                          widget.db.collection('contests').deleteMany(
+                              mongo.where.eq('user', snapshot['_id']));
+                          widget.db
+                              .collection('contests_participations')
+                              .deleteMany(
+                                  mongo.where.eq('user_id', snapshot['_id']));
+                          widget.db
+                              .collection('parties_participations')
+                              .deleteMany(
+                                  mongo.where.eq('user_id', snapshot['_id']));
+                          widget.db
+                              .collection('lessons_participations')
+                              .deleteMany(
+                                  mongo.where.eq('user_id', snapshot['_id']));
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      TextButton(
+                        child: const Text('No'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  );
+                });
+          });
+    } else {
+      return Container();
+    }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         // Create a list of tabs
         child: DefaultTabController(
-          length: 6,
+          length: 7,
           child: Scaffold(
             appBar: AppBar(
               bottom: const TabBar(
@@ -117,6 +154,7 @@ class _MyAdminState extends State<AdminPage> {
                   Tab(text: 'Horses'),
                   Tab(text: 'Contests'),
                   Tab(text: 'Owners'),
+                  Tab(text: 'DashBoard'),
                 ],
               ),
               title: const Text('Admin Page'),
@@ -141,7 +179,8 @@ class _MyAdminState extends State<AdminPage> {
                                 builder: (BuildContext context) {
                                   return AlertDialog(
                                     title: const Text('User infos'),
-                                    content: Text('Username: ${snapshot.data[index]['username']} \n Email: ${snapshot.data[index]['email']} \n Age : ${snapshot.data[index]['age']} \n admin: ${snapshot.data[index]['is_admin']}'),
+                                    content: Text(
+                                        'Username: ${snapshot.data[index]['username']} \n Email: ${snapshot.data[index]['email']} \n Age : ${snapshot.data[index]['age']} \n admin: ${snapshot.data[index]['is_admin']}'),
                                     actions: [
                                       TextButton(
                                         child: const Text('Close'),
@@ -151,8 +190,10 @@ class _MyAdminState extends State<AdminPage> {
                                       ),
                                       // Text button to delete the user with a confirmation dialog using the delete button function in form builder
                                       FutureBuilder(
-                                        future: deleteUserButton(snapshot.data[index]),
-                                        builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                        future: deleteUserButton(
+                                            snapshot.data[index]),
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot snapshot) {
                                           if (snapshot.hasData) {
                                             return snapshot.data;
                                           } else {
@@ -165,7 +206,6 @@ class _MyAdminState extends State<AdminPage> {
                                 },
                               );
                             },
-
                           );
                         },
                       );
@@ -185,29 +225,43 @@ class _MyAdminState extends State<AdminPage> {
                         itemCount: snapshot.data.length,
                         itemBuilder: (BuildContext context, int index) {
                           return ListTile(
-                            title: Text(snapshot.data[index]['land'] + ' - ' + snapshot.data[index]['status']),
-                            subtitle: Text("Date : ${snapshot.data[index]['date']}, Hour : ${snapshot.data[index]['when']}", style: TextStyle(color: Colors.grey)),
+                            title: Text(snapshot.data[index]['land'] +
+                                ' - ' +
+                                snapshot.data[index]['status']),
+                            subtitle: Text(
+                                "Date : ${snapshot.data[index]['date']}, Hour : ${snapshot.data[index]['when']}",
+                                style: TextStyle(color: Colors.grey)),
                             // If the user is admin, he can click on it to get more infos, but he has also the possibility to accept or reject the lesson if it's pending
                             onTap: () async {
-                              if (await SessionManager().get('isAdmin') == true && await SessionManager().get('isLogged') == true) {
+                              if (await SessionManager().get('isAdmin') ==
+                                      true &&
+                                  await SessionManager().get('isLogged') ==
+                                      true) {
                                 showDialog(
                                   context: context,
                                   builder: (BuildContext context) {
                                     var user_id = snapshot.data[index]['user'];
-                                    var user = widget.db.collection('users').findOne(mongo.where.eq('_id', user_id));
+                                    var user = widget.db
+                                        .collection('users')
+                                        .findOne(
+                                            mongo.where.eq('_id', user_id));
                                     return AlertDialog(
                                       title: const Text('Lesson infos'),
                                       content: Column(
                                         children: [
-                                          Text('Land : ${snapshot.data[index]['land']} \n Date : ${snapshot.data[index]['date']} \n Hour : ${snapshot.data[index]['when']} \n Status : ${snapshot.data[index]['status']}'),
+                                          Text(
+                                              'Land : ${snapshot.data[index]['land']} \n Date : ${snapshot.data[index]['date']} \n Hour : ${snapshot.data[index]['when']} \n Status : ${snapshot.data[index]['status']}'),
                                           FutureBuilder(
                                             future: user,
-                                            builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                            builder: (BuildContext context,
+                                                AsyncSnapshot snapshot) {
                                               if (snapshot.hasData) {
-                                                return Text('User : ${snapshot.data['username']}');
+                                                return Text(
+                                                    'User : ${snapshot.data['username']}');
                                               } else {
                                                 return const Center(
-                                                  child: CircularProgressIndicator(),
+                                                  child:
+                                                      CircularProgressIndicator(),
                                                 );
                                               }
                                             },
@@ -217,7 +271,8 @@ class _MyAdminState extends State<AdminPage> {
                                       actions: [
                                         // Put the close button on the same row as the accept and reject buttons
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             TextButton(
                                               child: const Text('Close'),
@@ -227,20 +282,44 @@ class _MyAdminState extends State<AdminPage> {
                                             ),
                                             // Accept button
                                             // If the lesson is pending, we can accept or reject it
-                                            if (snapshot.data[index]['status'] == 'pending')
+                                            if (snapshot.data[index]
+                                                    ['status'] ==
+                                                'pending')
                                               TextButton(
                                                 child: Text('Accept'),
                                                 onPressed: () {
-                                                  widget.db.collection('lessons').updateOne(mongo.where.eq('_id', snapshot.data[index]['_id']), mongo.modify.set('status', 'accepted'));
+                                                  widget.db
+                                                      .collection('lessons')
+                                                      .updateOne(
+                                                          mongo.where.eq(
+                                                              '_id',
+                                                              snapshot.data[
+                                                                      index]
+                                                                  ['_id']),
+                                                          mongo.modify.set(
+                                                              'status',
+                                                              'accepted'));
                                                   Navigator.of(context).pop();
                                                 },
                                               ),
                                             // Reject button
-                                            if (snapshot.data[index]['status'] == 'pending')
+                                            if (snapshot.data[index]
+                                                    ['status'] ==
+                                                'pending')
                                               TextButton(
                                                 child: Text('Reject'),
                                                 onPressed: () {
-                                                  widget.db.collection('lessons').updateOne(mongo.where.eq('_id', snapshot.data[index]['_id']), mongo.modify.set('status', 'rejected'));
+                                                  widget.db
+                                                      .collection('lessons')
+                                                      .updateOne(
+                                                          mongo.where.eq(
+                                                              '_id',
+                                                              snapshot.data[
+                                                                      index]
+                                                                  ['_id']),
+                                                          mongo.modify.set(
+                                                              'status',
+                                                              'rejected'));
                                                   Navigator.of(context).pop();
                                                 },
                                               ),
@@ -271,29 +350,43 @@ class _MyAdminState extends State<AdminPage> {
                         itemCount: snapshot.data.length,
                         itemBuilder: (BuildContext context, int index) {
                           return ListTile(
-                            title: Text(snapshot.data[index]['theme'] + ' - ' + snapshot.data[index]['status']),
-                            subtitle: Text("Date : ${snapshot.data[index]['date']}, Hour : ${snapshot.data[index]['when']}", style: TextStyle(color: Colors.grey)),
+                            title: Text(snapshot.data[index]['theme'] +
+                                ' - ' +
+                                snapshot.data[index]['status']),
+                            subtitle: Text(
+                                "Date : ${snapshot.data[index]['date']}, Hour : ${snapshot.data[index]['when']}",
+                                style: TextStyle(color: Colors.grey)),
                             // Same as the lessons, if the user is admin, he can click on it to get more infos, but he has also the possibility to accept or reject the party if it's pending
                             onTap: () async {
-                              if (await SessionManager().get('isAdmin') == true && await SessionManager().get('isLogged') == true) {
+                              if (await SessionManager().get('isAdmin') ==
+                                      true &&
+                                  await SessionManager().get('isLogged') ==
+                                      true) {
                                 showDialog(
                                   context: context,
                                   builder: (BuildContext context) {
                                     var user_id = snapshot.data[index]['user'];
-                                    var user = widget.db.collection('users').findOne(mongo.where.eq('_id', user_id));
+                                    var user = widget.db
+                                        .collection('users')
+                                        .findOne(
+                                            mongo.where.eq('_id', user_id));
                                     return AlertDialog(
                                       title: Text('Party infos'),
                                       content: Column(
                                         children: [
-                                          Text('Theme : ${snapshot.data[index]['theme']} \n Date : ${snapshot.data[index]['date']} \n Hour : ${snapshot.data[index]['when']} \n Status : ${snapshot.data[index]['status']}'),
+                                          Text(
+                                              'Theme : ${snapshot.data[index]['theme']} \n Date : ${snapshot.data[index]['date']} \n Hour : ${snapshot.data[index]['when']} \n Status : ${snapshot.data[index]['status']}'),
                                           FutureBuilder(
                                             future: user,
-                                            builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                            builder: (BuildContext context,
+                                                AsyncSnapshot snapshot) {
                                               if (snapshot.hasData) {
-                                                return Text('User : ${snapshot.data['username']}');
+                                                return Text(
+                                                    'User : ${snapshot.data['username']}');
                                               } else {
                                                 return const Center(
-                                                  child: CircularProgressIndicator(),
+                                                  child:
+                                                      CircularProgressIndicator(),
                                                 );
                                               }
                                             },
@@ -303,7 +396,8 @@ class _MyAdminState extends State<AdminPage> {
                                       actions: [
                                         // Put the close button on the same row as the accept and reject buttons
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             TextButton(
                                               child: Text('Close'),
@@ -313,20 +407,44 @@ class _MyAdminState extends State<AdminPage> {
                                             ),
                                             // Accept button
                                             // If the party is pending, we can accept or reject it
-                                            if (snapshot.data[index]['status'] == 'pending')
+                                            if (snapshot.data[index]
+                                                    ['status'] ==
+                                                'pending')
                                               TextButton(
                                                 child: Text('Accept'),
                                                 onPressed: () {
-                                                  widget.db.collection('parties').updateOne(mongo.where.eq('_id', snapshot.data[index]['_id']), mongo.modify.set('status', 'accepted'));
+                                                  widget.db
+                                                      .collection('parties')
+                                                      .updateOne(
+                                                          mongo.where.eq(
+                                                              '_id',
+                                                              snapshot.data[
+                                                                      index]
+                                                                  ['_id']),
+                                                          mongo.modify.set(
+                                                              'status',
+                                                              'accepted'));
                                                   Navigator.of(context).pop();
                                                 },
                                               ),
                                             // Reject button
-                                            if (snapshot.data[index]['status'] == 'pending')
+                                            if (snapshot.data[index]
+                                                    ['status'] ==
+                                                'pending')
                                               TextButton(
                                                 child: Text('Reject'),
                                                 onPressed: () {
-                                                  widget.db.collection('parties').updateOne(mongo.where.eq('_id', snapshot.data[index]['_id']), mongo.modify.set('status', 'rejected'));
+                                                  widget.db
+                                                      .collection('parties')
+                                                      .updateOne(
+                                                          mongo.where.eq(
+                                                              '_id',
+                                                              snapshot.data[
+                                                                      index]
+                                                                  ['_id']),
+                                                          mongo.modify.set(
+                                                              'status',
+                                                              'rejected'));
                                                   Navigator.of(context).pop();
                                                 },
                                               ),
@@ -355,11 +473,12 @@ class _MyAdminState extends State<AdminPage> {
                     if (snapshot.hasData) {
                       return ListView.builder(
                         itemCount: snapshot.data.length,
-                        itemBuilder: (BuildContext context, int
-                        index) {
+                        itemBuilder: (BuildContext context, int index) {
                           return ListTile(
                             title: Text(snapshot.data[index]['name']),
-                            subtitle: Text("Age : ${snapshot.data[index]['age']}, Breed : ${snapshot.data[index]['breed']}", style: TextStyle(color: Colors.grey)),
+                            subtitle: Text(
+                                "Age : ${snapshot.data[index]['age']}, Breed : ${snapshot.data[index]['breed']}",
+                                style: TextStyle(color: Colors.grey)),
                             onTap: () {
                               showDialog(
                                 context: context,
@@ -369,10 +488,15 @@ class _MyAdminState extends State<AdminPage> {
                                       children: [
                                         Text(snapshot.data[index]['name']),
                                         // Make the second text a subtitle (police size smaller)
-                                        Text("Age : ${snapshot.data[index]['age']}, Breed : ${snapshot.data[index]['breed']} \n Specialities : ${snapshot.data[index]['speciality'].join(' - ')}", style: TextStyle(color: Colors.grey, fontSize: 15)),
+                                        Text(
+                                            "Age : ${snapshot.data[index]['age']}, Breed : ${snapshot.data[index]['breed']} \n Specialities : ${snapshot.data[index]['speciality'].join(' - ')}",
+                                            style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 15)),
                                       ],
                                     ),
-                                    content: Image.network(snapshot.data[index]['photo']),
+                                    content: Image.network(
+                                        snapshot.data[index]['photo']),
                                     // Add all additional infos about the horse
                                     actions: [
                                       TextButton(
@@ -406,9 +530,11 @@ class _MyAdminState extends State<AdminPage> {
                         itemBuilder: (BuildContext context, int index) {
                           return ListTile(
                             title: Text(snapshot.data[index]['name']),
-                            subtitle: Text("Address : ${snapshot.data[index]['address']}, Date : ${snapshot.data[index]['date']}", style: TextStyle(color: Colors.grey)),
+                            subtitle: Text(
+                                "Address : ${snapshot.data[index]['address']}, Date : ${snapshot.data[index]['date']}",
+                                style: TextStyle(color: Colors.grey)),
                             // When we click on it , like horses we got infos and image is print
-onTap: () {
+                            onTap: () {
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
@@ -417,10 +543,15 @@ onTap: () {
                                       children: [
                                         Text(snapshot.data[index]['name']),
                                         // Make the second text a subtitle (police size smaller)
-                                        Text("Address : ${snapshot.data[index]['address']} \n Date : ${snapshot.data[index]['date']}", style: TextStyle(color: Colors.grey, fontSize: 15)),
+                                        Text(
+                                            "Address : ${snapshot.data[index]['address']} \n Date : ${snapshot.data[index]['date']}",
+                                            style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 15)),
                                       ],
                                     ),
-                                    content: Image.network(snapshot.data[index]['photo']),
+                                    content: Image.network(
+                                        snapshot.data[index]['photo']),
                                     actions: [
                                       TextButton(
                                         child: Text('Close'),
@@ -446,7 +577,6 @@ onTap: () {
                 // Create a list of owners
                 FutureBuilder(
                   future: getAllOwners(),
-
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     if (snapshot.hasData) {
                       return ListView.builder(
@@ -465,6 +595,30 @@ onTap: () {
                     }
                   },
                 ),
+                FutureBuilder(
+                  future: getLessonsUser(),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return ListTile(
+                            title: Text(
+                              snapshot.data[index]['land'],
+                              style: const TextStyle(
+                                  color: Color.fromARGB(19, 61, 12, 223)),
+                            ),
+                            subtitle: Text(snapshot.data[index]['type']),
+                          );
+                        },
+                      );
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  },
+                )
               ],
             ),
           ),
@@ -473,4 +627,3 @@ onTap: () {
     );
   }
 }
-
