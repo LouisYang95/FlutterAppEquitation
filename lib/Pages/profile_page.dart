@@ -162,13 +162,12 @@ class _UserProfilState extends State<UserProfil> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: const Text('Information'),
-            content: const Text('Your informations'),
+            title: const Text('Others Informations'),
             actions: [
               SizedBox(
                 width: 300,
-                height: 300,
                 child: Column(children: <Widget>[
+                  const SizedBox(height: 20.0),
                   Padding(
                     padding: const EdgeInsets.all(10),
                     child: TextFormField(
@@ -228,6 +227,7 @@ class _UserProfilState extends State<UserProfil> {
                               )
                             ],
                           )),
+                  const SizedBox(height: 40.0),
                   ElevatedButton(
                     onPressed: () {
                       addUserData();
@@ -336,7 +336,7 @@ class _UserProfilState extends State<UserProfil> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: const Text('🐴 BabacHorse '),
       ),
       body: isConnected
           ? SingleChildScrollView(
@@ -344,18 +344,20 @@ class _UserProfilState extends State<UserProfil> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                  Container(
+                    const SizedBox(height: 80.0),
+                    Container(
                       child: GestureDetector(
-                    onTap: () {
-                      changeValue(_photoUrl, _photoUrl);
-                    },
-                    child: _photoUrl != ''
+                        onTap: () {
+                          changeValue(_photoUrl, _photoUrl);
+                        },
+                        child: _photoUrl != ''
                         ? CircleAvatar(
                             radius: 90,
                             backgroundImage: NetworkImage(_photoUrl.text),
                           )
                         : const Icon(Icons.person),
                   )),
+                  const SizedBox(height: 50.0),
                   GestureDetector(
                     onTap: () async {
                       changeValue(_nameField, _nameField);
@@ -426,6 +428,7 @@ class _UserProfilState extends State<UserProfil> {
                               ),
                             ]),
                           ),
+                          const SizedBox(height: 50.0),
                           // add button
                           ElevatedButton(
                             onPressed: () {
