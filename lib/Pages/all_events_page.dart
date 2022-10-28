@@ -173,25 +173,45 @@ class AllEventsPageState extends State<AllEventsPage> {
         var contestParticipation = await widget.db.collection('contests_participations').findOne(mongo.where.eq('user_id', objectId).and(mongo.where.eq('contest_id', eventId)));
 
         if (contestParticipation == null) {
-          widget.db.collection('contests_participations').insertOne(
-              <String, dynamic>{
-                'user_id': user['_id'],
-                'contest_id': eventId,
-                'adhesion_date': DateTime.now().toString().substring(0, 16)
-              });
-          var popup = showDialog(
-              barrierDismissible: false,
-              context: context,
-              builder: (BuildContext context) {
-                return const AlertDialog(
-                  title: Text("Success", style: TextStyle(color: Colors.green)),
-                  content: Text("You have successfully registered for this contest"),
-                );
-              });
-          Future.delayed(const Duration(seconds: 2), () {
-            Navigator.of(context).pop();
-          });
-          return popup;
+          // Get user
+          var user = await widget.db.collection('users').findOne(mongo.where.eq('_id', objectId));
+          if (user['league'] == null) {
+            var popup = showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (BuildContext context) {
+                  return const AlertDialog(
+                    title: Text("Error", style: TextStyle(color: Colors.red)),
+                    content: Text("You have to be in a league to participate to a contest \nCheck your profile !"),
+                  );
+                });
+            Future.delayed(const Duration(seconds: 2), () {
+              Navigator.of(context).pop();
+              Navigator.pushNamed(context, '/profil');
+            });
+            return popup;
+          } else {
+            widget.db.collection('contests_participations').insertOne(
+                <String, dynamic>{
+                  'user_id': user['_id'],
+                  'contest_id': eventId,
+                  'user_league': user['league'],
+                  'adhesion_date': DateTime.now().toString().substring(0, 16)
+                });
+            var popup = showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (BuildContext context) {
+                  return const AlertDialog(
+                    title: Text("Success", style: TextStyle(color: Colors.green)),
+                    content: Text("You have successfully registered for this contest"),
+                  );
+                });
+            Future.delayed(const Duration(seconds: 2), () {
+              Navigator.of(context).pop();
+            });
+            return popup;
+          }
         } else {
           var popup = showDialog(
               barrierDismissible: false,
