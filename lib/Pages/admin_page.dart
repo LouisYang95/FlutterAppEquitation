@@ -109,7 +109,7 @@ class _MyAdminState extends State<AdminPage> {
       body: Center(
         // Create a list of tabs
         child: DefaultTabController(
-          length: 6,
+          length: 5,
           child: Scaffold(
             appBar: AppBar(
               bottom: const TabBar(
@@ -119,7 +119,6 @@ class _MyAdminState extends State<AdminPage> {
                   Tab(text: 'Parties'),
                   Tab(text: 'Horses'),
                   Tab(text: 'Contests'),
-                  Tab(text: 'Owners'),
                 ],
               ),
               title: const Text('Admin Page'),
@@ -450,27 +449,6 @@ onTap: () {
                   },
                 ),
                 // Create a list of owners
-                FutureBuilder(
-                  future: getAllOwners(),
-
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    if (snapshot.hasData) {
-                      return ListView.builder(
-                        itemCount: snapshot.data.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return ListTile(
-                            title: Text(snapshot.data[index]['name']),
-                            subtitle: Text(snapshot.data[index]['description']),
-                          );
-                        },
-                      );
-                    } else {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                  },
-                ),
               ],
             ),
           ),
