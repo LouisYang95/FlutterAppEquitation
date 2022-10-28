@@ -28,6 +28,11 @@ class _UserProfilState extends State<UserProfil> {
   final _ffeField = TextEditingController();
   final _photoUrl = TextEditingController();
 
+  //form horses
+  final _nameHorseField = TextEditingController();
+  final _ageHorseField = TextEditingController();
+  final _breedHorseField = TextEditingController();
+
   // Uri ffeUrl = Uri.parse('https://www.ffe.com/');
   bool isCompleted = false;
   List myProfil = [];
@@ -51,7 +56,7 @@ class _UserProfilState extends State<UserProfil> {
     super.initState();
     isLogged();
     getUser();
-    getHorses();
+    getHorsesData();
   }
 
 //function to update our data
@@ -251,28 +256,91 @@ class _UserProfilState extends State<UserProfil> {
   }
 
 //function to get every horses
-  getHorses() async {
+  getHorsesData() async {
     var idUser = await SessionManager().get('id');
     var id = mongo.ObjectId.fromHexString(idUser);
     var horses =
-        await widget.db.collection('horses').find(mongo.where.eq('owners', id));
-    for (var i = 0; i < horses.length; i++) {
+        await widget.db.collection('horses').find(mongo.where.eq('owner', id));
+    print('this function');
+    horses.forEach((element) {
+      print(element);
       setState(() {
-        myHorses.add(Horses(
-            id: horses[i]['_id'].toString(),
-            name: horses[i]['name'],
-            age: horses[i]['age'],
-            breed: horses[i]['breed'],
-            photo: horses[i]['photoUrl'],
-            genre: horses[i]['genre'],
-            state: horses[i]['state']));
+        myHorses.add(element);
+        print(myHorses);
       });
-    }
-    print(horses);
-    setState(() {
-      myHorses.add(horses);
-      print(myHorses[0]);
     });
+  }
+
+  defineValueHorse() {
+    _nameHorseField.text = myHorses[0]['name'];
+    _breedHorseField.text = myHorses[0]['breed'];
+    _ageHorseField.text = myHorses[0]['age'].toString();
+  }
+
+  editHorseInDatabase() async {
+    var idUser = await SessionManager().get('id');
+    var id = mongo.ObjectId.fromHexString(idUser);
+    widget.db.collection('horses').update(mongo.where.eq('owner', id),
+        mongo.modify.set('name', _nameHorseField.text));
+    widget.db.collection('horses').update(mongo.where.eq('owner', id),
+        mongo.modify.set('breed', _breedHorseField.text));
+    widget.db.collection('horses').update(mongo.where.eq('owner', id),
+        mongo.modify.set('age', int.parse(_ageHorseField.text)));
+    Navigator.of(context).pop();
+  }
+
+  getHorses() async {
+    defineValueHorse();
+    showDialog(
+        context: context,
+        builder: (context) {
+          return SingleChildScrollView(
+              child: AlertDialog(
+                  content: Column(
+            children: [
+              ...myHorses.map((e) => ListTile(
+                  title: Card(
+                      margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                      child: Column(children: [
+                        TextField(
+                          controller: _nameHorseField,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
+                            ),
+                            labelText: 'Name',
+                          ),
+                        ),
+                        TextField(
+                          controller: _breedHorseField,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
+                            ),
+                            labelText: 'Breed',
+                          ),
+                        ),
+                        TextField(
+                          controller: _ageHorseField,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
+                            ),
+                            labelText: 'Age',
+                          ),
+                        ),
+                        ElevatedButton(
+                            onPressed: () {
+                              editHorseInDatabase();
+                            },
+                            child: const Text('Edit'))
+                      ]))))
+            ],
+          )));
+        });
   }
 
   changeValue(var variable, final controller) {
@@ -345,6 +413,7 @@ class _UserProfilState extends State<UserProfil> {
       });
     }
   }
+
 //function to define league into our database
   void defineUserLeague() async {
     var idUser = await SessionManager().get('id');
@@ -352,6 +421,7 @@ class _UserProfilState extends State<UserProfil> {
     var update = await widget.db.collection('users').update(
         mongo.where.eq('_id', id), mongo.modify.set('league', _selectedLeague));
   }
+
 //function to redefine our info into textfield
   void defineControllerUser() {
     _nameField.text = myProfil[0].name;
@@ -513,6 +583,12 @@ class _UserProfilState extends State<UserProfil> {
                             },
                             child: const Text('Update'),
                           ),
+                          ElevatedButton(
+                            onPressed: () {
+                              getHorses();
+                            },
+                            child: const Text('Your horses'),
+                          )
                         ],
                       )))
                 ]))
