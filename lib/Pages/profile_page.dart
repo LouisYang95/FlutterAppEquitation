@@ -351,7 +351,6 @@ class _UserProfilState extends State<UserProfil> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-<<<<<<< Updated upstream
                     const SizedBox(height: 80.0),
                     Container(
                       child: GestureDetector(
@@ -359,24 +358,13 @@ class _UserProfilState extends State<UserProfil> {
                           changeValue(_photoUrl, _photoUrl);
                         },
                         child: _photoUrl != ''
-=======
-                  GestureDetector(
-                    onTap: () {
-                      changeValue(_photoUrl, _photoUrl);
-                    },
-                    child: _photoUrl != ''
->>>>>>> Stashed changes
                         ? CircleAvatar(
                             radius: 90,
                             backgroundImage: NetworkImage(_photoUrl.text),
                           )
                         : const Icon(Icons.person),
-<<<<<<< Updated upstream
                   )),
                   const SizedBox(height: 50.0),
-=======
-                  ),
->>>>>>> Stashed changes
                   GestureDetector(
                     onTap: () async {
                       changeValue(_nameField, _nameField);
