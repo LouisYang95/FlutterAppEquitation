@@ -7,6 +7,7 @@ class Users {
   String? ages;
   String? ffe;
   String? photoUrl;
+  List? horses;
 
   Users({
     required this.name,
@@ -17,5 +18,6 @@ class Users {
     this.ages,
     this.ffe,
     this.photoUrl,
+    this.horses,
   });
 }
