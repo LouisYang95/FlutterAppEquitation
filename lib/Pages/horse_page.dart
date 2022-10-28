@@ -155,16 +155,17 @@ becomePartOwner(horseId) async {
                                       subtitle: Row(
                                         children: [
                                           const SizedBox(height: 40.0),
+                                          Text(snapshot.data[index]['genre']),
+                                          const SizedBox(width: 20.0),
                                           Text('${snapshot.data[index]['age']} year'),
                                           const SizedBox(width: 20.0),
-                                          Text(snapshot.data[index]['breed']),
                                           Text(snapshot.data[index]['speciality'].join(' - ').toString()),
                                         ],
                                       ),
                                       trailing: Container(
-                                        margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                                        child: Text(snapshot.data[index]['genre'],
-                                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 30)
+                                        margin: const EdgeInsets.fromLTRB(0, 15, 0, 0),
+                                        child: Text(snapshot.data[index]['breed'],
+                                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)
                                         ),
                                       ),
                                     ),
