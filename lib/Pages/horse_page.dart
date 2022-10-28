@@ -78,9 +78,8 @@ becomePartOwner(horseId) async {
 
         await widget.db.collection('horses').update(
             mongo.where.id(horseId),
-            mongo.modify.set('is_available', false)
-                .set('owners', [objectId])
-                .set('state', 'part'));
+            mongo.modify.set('state', 'part')
+                .set('owners', [objectId]));
       } else {
         if (await horse['owners'].length == 1 &&
             await horse['owners'][0] == objectId) {
@@ -97,11 +96,6 @@ becomePartOwner(horseId) async {
             Navigator.of(context).pop();
           });
           return popup;
-        }
-        if (await horse['owners'].length == 2) {
-          await widget.db.collection('horses').update(
-              mongo.where.id(horseId),
-              mongo.modify.set('is_available', false));
         } else if (await horse['owners'].length < 2) {
           await widget.db.collection('users').update(
               mongo.where.id(objectId),
@@ -113,6 +107,12 @@ becomePartOwner(horseId) async {
               mongo.modify.set('state', 'part')
                   .push('owners', objectId));
           }
+        setState(() {});
+        if (await horse['owners'].length == 2) {
+          await widget.db.collection('horses').update(
+              mongo.where.id(horseId),
+              mongo.modify.set('is_available', false));
+        }
         }
 
       // SetState
