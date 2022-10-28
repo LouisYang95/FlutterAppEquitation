@@ -436,13 +436,13 @@ class _UserProfilState extends State<UserProfil> {
                                   DropdownMenuItem(
                                       value: 'Amateur', child: Text('Amateur')),
                                   DropdownMenuItem(
-                                      value: 'Club 1', child: Text('Club1')),
+                                      value: 'Club1', child: Text('Club 1')),
                                   DropdownMenuItem(
-                                      value: 'Club 2', child: Text('Club2')),
+                                      value: 'Club2', child: Text('Club 2')),
                                   DropdownMenuItem(
-                                      value: 'Club 3', child: Text('Club3')),
+                                      value: 'Club3', child: Text('Club 3')),
                                   DropdownMenuItem(
-                                      value: 'Club 4', child: Text('Club4')),
+                                      value: 'Club4', child: Text('Club 4')),
                                 ],
                               ),
                               Padding(
