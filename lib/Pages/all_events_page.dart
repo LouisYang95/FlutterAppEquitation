@@ -220,7 +220,7 @@ class AllEventsPageState extends State<AllEventsPage> {
         length: 3,
         child: Scaffold(
           appBar: AppBar(
-            title: const Text('All Events'),
+            title: const Text('🐴 BabacHorse'),
             bottom: const TabBar(
               tabs: [
                 Tab(text: 'Lessons'),
