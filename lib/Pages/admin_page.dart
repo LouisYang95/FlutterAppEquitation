@@ -76,6 +76,16 @@ class _MyAdminState extends State<AdminPage> {
                           child: const Text('Yes'),
                           onPressed: () {
                             widget.db.collection('users').deleteOne(mongo.where.eq('_id', snapshot['_id']));
+                            widget.db.collection('contests').deleteMany(mongo.where.eq('user', snapshot['_id']));
+                            widget.db.collection('lessons').deleteMany(mongo.where.eq('user', snapshot['_id']));
+                            widget.db.collection('parties').deleteMany(mongo.where.eq('user', snapshot['_id']));
+                            widget.db.collection('lessons_participations').deleteMany(mongo.where.eq('user_id', snapshot['_id']));
+                            widget.db.collection('parties_participations').deleteMany(mongo.where.eq('user_id', snapshot['_id']));
+                            widget.db.collection('contests_participations').deleteMany(mongo.where.eq('user_id', snapshot['_id']));
+                            widget.db.collection('horses').updateMany(mongo.where.eq('owner', snapshot['_id']), mongo.modify.set('owner', null).set('state', null).set('is_available', true));
+                            widget.db.collection('horses').updateMany(mongo.where.eq('owners', snapshot['_id']), mongo.modify.pull('owners', snapshot['_id']).set('is_available', true));
+
+
                             Navigator.of(context).pop();
                           },
                         ),

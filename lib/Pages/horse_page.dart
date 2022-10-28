@@ -61,6 +61,7 @@ class HorsePageState extends State<HorsePage> {
   }
 
 becomePartOwner(horseId) async {
+    print('becomePartOwner');
     var session = SessionManager();
     var userId = await session.get('id');
     if (userId != '') {
@@ -138,6 +139,7 @@ becomePartOwner(horseId) async {
                   return ListView.builder(
                       itemCount: snapshot.data.length,
                       itemBuilder: ((context, int index) {
+                        var _horse = snapshot.data[index];
                         return Center(
                           child: Card(
                               elevation: 4.0,
@@ -190,10 +192,11 @@ becomePartOwner(horseId) async {
                                                   AsyncSnapshot snapshot) {
                                                 if (snapshot.hasData) {
                                                   if (snapshot.data == false) {
+                                                    print(snapshot.data);
                                                     return ElevatedButton(
                                                       onPressed: () {
-                                                        becomePartOwner(
-                                                            snapshot.data[index]['_id']);
+                                                        becomeFullOwner(
+                                                            _horse['_id']);
                                                       },
                                                       child: const Text('Become Owner'),
                                                     );
