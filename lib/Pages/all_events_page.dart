@@ -128,9 +128,15 @@ class AllEventsPageState extends State<AllEventsPage> {
                             <String, dynamic>{
                               'user_id': user['_id'],
                               'party_id': eventId,
-                              'what_to_bring': _whatToBringController.text,
                               'adhesion_date': DateTime.now().toString().substring(0, 16)
                             });
+                        // Add to the party what the user wants to bring
+                        widget.db.collection('parties').updateOne(
+                            mongo.where.eq('_id', eventId),
+                            mongo.modify.push('whatToBring', <String, dynamic>{
+                              'user_id': user['_id'],
+                              'whatToBring': _whatToBringController.text
+                            }));
                         Navigator.of(context).pop();
                       },
                     ),

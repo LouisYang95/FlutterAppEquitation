@@ -56,8 +56,7 @@ class _MyAdminState extends State<AdminPage> {
     var owners = await widget.db.collection('owners').find().toList();
     return owners;
   }
-
-
+  
   deleteUserButton(snapshot) async {
     // If user logged in is not admin, don't display delete button
       if (await SessionManager().get('isAdmin') == true && await SessionManager().get('isLogged') == true && snapshot['is_admin'] == false) {
@@ -272,6 +271,7 @@ class _MyAdminState extends State<AdminPage> {
                   future: getAllParties(),
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     if (snapshot.hasData) {
+                      var _party = snapshot.data;
                       return ListView.builder(
                         itemCount: snapshot.data.length,
                         itemBuilder: (BuildContext context, int index) {
@@ -280,22 +280,44 @@ class _MyAdminState extends State<AdminPage> {
                             subtitle: Text("Date : ${snapshot.data[index]['date']}, Hour : ${snapshot.data[index]['when']}", style: TextStyle(color: Colors.grey)),
                             // Same as the lessons, if the user is admin, he can click on it to get more infos, but he has also the possibility to accept or reject the party if it's pending
                             onTap: () async {
-                              if (await SessionManager().get('isAdmin') == true && await SessionManager().get('isLogged') == true) {
+                              // Click on it to have more info (also comments from those who participat
                                 showDialog(
                                   context: context,
                                   builder: (BuildContext context) {
                                     var user_id = snapshot.data[index]['user'];
                                     var user = widget.db.collection('users').findOne(mongo.where.eq('_id', user_id));
                                     return AlertDialog(
-                                      title: Text('Party infos'),
+                                      title: const Text('Party infos'),
                                       content: Column(
                                         children: [
                                           Text('Theme : ${snapshot.data[index]['theme']} \n Date : ${snapshot.data[index]['date']} \n Hour : ${snapshot.data[index]['when']} \n Status : ${snapshot.data[index]['status']}'),
+                                          // For each element in whatToBring print the message and search for the user who wrote it
+                                          if (snapshot.data[index]['whatToBring'] != null)
+                                            // Text to say what users will bring "What to bring :"
+                                            Text('What would users bring :'),
+                                          if (snapshot.data[index]['whatToBring'] != null)
+                                            for (var i = 0; i < snapshot.data[index]['whatToBring'].length; i++)
+                                              FutureBuilder(
+                                                future: widget.db.collection('users').findOne(mongo.where.eq('_id', snapshot.data[index]['whatToBring'][i]['user_id'])),
+                                                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                                  if (snapshot.hasData) {
+                                                    // Return the message and the username (subtitle)
+                                                    return ListTile(
+                                                      title: Text(snapshot.data['username']),
+                                                      subtitle: Text(_party[index]['whatToBring'][i]['whatToBring']),
+                                                    );
+                                                  } else {
+                                                    return const Center(
+                                                      child: CircularProgressIndicator(),
+                                                    );
+                                                  }
+                                                },
+                                              ),
                                           FutureBuilder(
                                             future: user,
                                             builder: (BuildContext context, AsyncSnapshot snapshot) {
                                               if (snapshot.hasData) {
-                                                return Text('User : ${snapshot.data['username']}');
+                                                return Text('Organization : ${snapshot.data['username']}');
                                               } else {
                                                 return const Center(
                                                   child: CircularProgressIndicator(),
@@ -303,45 +325,68 @@ class _MyAdminState extends State<AdminPage> {
                                               }
                                             },
                                           ),
+
                                         ],
                                       ),
                                       actions: [
-                                        // Put the close button on the same row as the accept and reject buttons
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            TextButton(
-                                              child: Text('Close'),
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                            ),
-                                            // Accept button
-                                            // If the party is pending, we can accept or reject it
-                                            if (snapshot.data[index]['status'] == 'pending')
-                                              TextButton(
-                                                child: Text('Accept'),
-                                                onPressed: () {
-                                                  widget.db.collection('parties').updateOne(mongo.where.eq('_id', snapshot.data[index]['_id']), mongo.modify.set('status', 'accepted'));
-                                                  Navigator.of(context).pop();
-                                                },
-                                              ),
-                                            // Reject button
-                                            if (snapshot.data[index]['status'] == 'pending')
-                                              TextButton(
-                                                child: Text('Reject'),
-                                                onPressed: () {
-                                                  widget.db.collection('parties').updateOne(mongo.where.eq('_id', snapshot.data[index]['_id']), mongo.modify.set('status', 'rejected'));
-                                                  Navigator.of(context).pop();
-                                                },
-                                              ),
-                                          ],
+                                        // Print a close button if the user is not admin in a futurebuilder
+                                        FutureBuilder(
+                                          future: SessionManager().get('isAdmin'),
+                                          builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                            if (snapshot.hasData) {
+                                              if (snapshot.data == true) {
+                                                return Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    TextButton(
+                                                      child: const Text('Close'),
+                                                      onPressed: () {
+                                                        Navigator.of(context).pop();
+                                                      },
+                                                    ),
+                                                    // Accept button
+                                                    // If the party is pending, we can accept or reject it
+                                                    if (_party[index]['status'] == 'pending' && snapshot.data == true)
+                                                      TextButton(
+                                                        child: Text('Accept'),
+                                                        onPressed: () {
+                                                          widget.db.collection('parties').updateOne(mongo.where.eq('_id', snapshot.data[index]['_id']), mongo.modify.set('status', 'accepted'));
+                                                          setState(() {});
+                                                          Navigator.of(context).pop();
+                                                        },
+                                                      ),
+                                                    // Reject button
+                                                    if (_party[index]['status'] == 'pending' && snapshot.data == true)
+                                                      TextButton(
+                                                        child: Text('Reject'),
+                                                        onPressed: () {
+                                                          widget.db.collection('parties').updateOne(mongo.where.eq('_id', snapshot.data[index]['_id']), mongo.modify.set('status', 'rejected'));
+                                                          // Set state
+                                                          setState(() {});
+                                                          Navigator.of(context).pop();
+                                                        },
+                                                      ),
+                                                  ],
+                                                );
+                                              } else {
+                                                return TextButton(
+                                                  child: const Text('Close'),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                );
+                                              }
+                                            } else {
+                                              return const Center(
+                                                child: CircularProgressIndicator(),
+                                              );
+                                            }
+                                          },
                                         ),
                                       ],
                                     );
                                   },
                                 );
-                              }
                             },
                           );
                         },
