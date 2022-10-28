@@ -84,7 +84,8 @@ class _MyAdminState extends State<AdminPage> {
                             widget.db.collection('horses').updateMany(mongo.where.eq('owner', snapshot['_id']), mongo.modify.set('owner', null).set('state', null).set('is_available', true));
                             widget.db.collection('horses').updateMany(mongo.where.eq('owners', snapshot['_id']), mongo.modify.pull('owners', snapshot['_id']).set('is_available', true));
 
-
+                            setState(() {});
+                            Navigator.of(context).pop();
                             Navigator.of(context).pop();
                           },
                         ),
@@ -101,6 +102,61 @@ class _MyAdminState extends State<AdminPage> {
       } else {
         return Container();
       }
+  }
+
+  deleteHorseButton(snapshot) async {
+    if (await SessionManager().get('isAdmin') == true && await SessionManager().get('isLogged') == true) {
+      return IconButton(
+          icon: const Icon(Icons.delete),
+          onPressed: () {
+            // Make a verification dialog
+            showDialog<void>(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('Delete Horse'),
+                    content: const Text('Are you sure you want to delete this horse ?'),
+                    actions: <Widget>[
+                      TextButton(
+                        child: const Text('Yes'),
+                        onPressed: () async {
+                          widget.db.collection('horses').deleteOne(mongo.where.eq('_id', snapshot['_id']));
+                          var users = await widget.db.collection('users').find().toList();
+                          // For each user
+                          for (var user in users) {
+                            // If user['horses'] is not null
+                            if (user['horses'] != null) {
+                              // For each horse in user['horses']
+                              for (var horse in user['horses']) {
+                                // If horse is the horse we want to delete
+                                if (horse == snapshot['_id']) {
+                                  // Delete it
+                                  widget.db.collection('users').updateOne(mongo.where.eq('_id', user['_id']), mongo.modify.pull('horses', horse));
+                                }
+                              }
+                            }
+                          }
+
+                          // SetState
+                          setState(() {});
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      TextButton(
+                        child: const Text('No'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  );
+                });
+          });
+    } else {
+      return Container();
+    }
+
   }
   @override
   Widget build(BuildContext context) {
@@ -429,6 +485,17 @@ class _MyAdminState extends State<AdminPage> {
                                         child: Text('Close'),
                                         onPressed: () {
                                           Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      // Text button to delete the user with a confirmation dialog using the delete button function in form builder
+                                      FutureBuilder(
+                                        future: deleteHorseButton(snapshot.data[index]),
+                                        builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                          if (snapshot.hasData) {
+                                            return snapshot.data;
+                                          } else {
+                                            return Container();
+                                          }
                                         },
                                       ),
                                     ],
