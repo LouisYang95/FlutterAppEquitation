@@ -3,8 +3,8 @@ import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
 
-import 'package:flutter_app_equitation/classses/class_users.dart';
-import '../main.dart';
+import 'package:flutter_app_equitation/classes/class_users.dart';
+import 'package:flutter_app_equitation/classes/class_horse.dart';
 
 class UserProfil extends StatefulWidget {
   static const tag = "user_profil";
@@ -32,8 +32,10 @@ class _UserProfilState extends State<UserProfil> {
   bool isCompleted = false;
   List myProfil = [];
   bool isConnected = false;
-  var _selectedLeague = 'default';
+  var _selectedLeague = 'Select your league';
+  List myHorses = [];
 
+  //function to get session manager to check if we are logged
   Future<bool> isLogged() async {
     var isLogged = await SessionManager().get('isLogged');
     if (isLogged == true) {
@@ -49,12 +51,15 @@ class _UserProfilState extends State<UserProfil> {
     super.initState();
     isLogged();
     getUser();
+    getHorses();
   }
 
+//function to update our data
   defineNewValue(var variable, final controller) async {
-    var idUser = await SessionManager().get('id');
-    var id = mongo.ObjectId.fromHexString(idUser);
+    var idUser = await SessionManager().get('id'); //get id
+    var id = mongo.ObjectId.fromHexString(idUser); //change id
     if (controller.text == null || controller.text == '') {
+      //show our dialog box if it's null or empty
       showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -70,6 +75,8 @@ class _UserProfilState extends State<UserProfil> {
                 ],
               ));
     }
+
+    //part where we update every data for our user
     if (variable == _nameField) {
       setState(() {
         _nameField.text = controller.text;
@@ -101,6 +108,7 @@ class _UserProfilState extends State<UserProfil> {
     }
   }
 
+//function to every add/ update info from our form
   addUserData() async {
     var idUser = await SessionManager().get('id');
     var id = mongo.ObjectId.fromHexString(idUser);
@@ -151,12 +159,14 @@ class _UserProfilState extends State<UserProfil> {
     }
   }
 
+// function to show our profil info
   showInfo() {
     if (myProfil[0].ffe != null && myProfil[0].ffe != '') {
       setState(() {
         isCompleted = true;
       });
     }
+    // show dialog box form for further info
     showDialog(
         context: context,
         builder: (context) {
@@ -240,6 +250,31 @@ class _UserProfilState extends State<UserProfil> {
         });
   }
 
+//function to get every horses
+  getHorses() async {
+    var idUser = await SessionManager().get('id');
+    var id = mongo.ObjectId.fromHexString(idUser);
+    var horses =
+        await widget.db.collection('horses').find(mongo.where.eq('owners', id));
+    for (var i = 0; i < horses.length; i++) {
+      setState(() {
+        myHorses.add(Horses(
+            id: horses[i]['_id'].toString(),
+            name: horses[i]['name'],
+            age: horses[i]['age'],
+            breed: horses[i]['breed'],
+            photo: horses[i]['photoUrl'],
+            genre: horses[i]['genre'],
+            state: horses[i]['state']));
+      });
+    }
+    print(horses);
+    setState(() {
+      myHorses.add(horses);
+      print(myHorses[0]);
+    });
+  }
+
   changeValue(var variable, final controller) {
     showDialog(
         context: context,
@@ -302,6 +337,7 @@ class _UserProfilState extends State<UserProfil> {
         ffe: user['ffe'],
         photoUrl: user['photo'],
         league: user['league'],
+        horses: user['horses'],
       );
       setState(() {
         myProfil.add(me);
@@ -309,21 +345,21 @@ class _UserProfilState extends State<UserProfil> {
       });
     }
   }
-
+//function to define league into our database
   void defineUserLeague() async {
     var idUser = await SessionManager().get('id');
     var id = mongo.ObjectId.fromHexString(idUser);
     var update = await widget.db.collection('users').update(
         mongo.where.eq('_id', id), mongo.modify.set('league', _selectedLeague));
   }
-
+//function to redefine our info into textfield
   void defineControllerUser() {
     _nameField.text = myProfil[0].name;
     _emailField.text = myProfil[0].email;
     _passwordField.text = myProfil[0].password;
     _agesField.text = myProfil[0].ages ?? '';
     _phoneNumber.text = myProfil[0].phone ?? '';
-    _ffeField.text = myProfil[0].ffe ?? '';
+    _ffeField.text = myProfil[0].ffe ?? 'https://www.ffe.com/';
     _photoUrl.text = myProfil[0].photoUrl ?? '';
     _selectedLeague = myProfil[0].league ?? _selectedLeague;
   }
@@ -351,13 +387,13 @@ class _UserProfilState extends State<UserProfil> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const SizedBox(height: 80.0),
-                    Container(
+                  const SizedBox(height: 80.0),
+                  Container(
                       child: GestureDetector(
-                        onTap: () {
-                          changeValue(_photoUrl, _photoUrl);
-                        },
-                        child: _photoUrl != ''
+                    onTap: () {
+                      changeValue(_photoUrl, _photoUrl);
+                    },
+                    child: _photoUrl != ''
                         ? CircleAvatar(
                             radius: 90,
                             backgroundImage: NetworkImage(_photoUrl.text),
@@ -412,12 +448,12 @@ class _UserProfilState extends State<UserProfil> {
                                 ),
                               ),
                               DropdownButtonFormField<String>(
-                                // value: _selectedLeague,
+                                value: _selectedLeague,
                                 validator: (value) {
                                   if (value == '' ||
                                       value == null ||
-                                      value == 'default') {
-                                    return 'Please select a value';
+                                      value == 'Select your league') {
+                                    return 'Please select a league';
                                   }
                                   return null;
                                 },
@@ -430,19 +466,19 @@ class _UserProfilState extends State<UserProfil> {
                                 },
                                 items: const <DropdownMenuItem<String>>[
                                   DropdownMenuItem<String>(
-                                    value: 'default',
+                                    value: 'Select your league',
                                     child: Text('Select your league'),
                                   ),
                                   DropdownMenuItem(
                                       value: 'Amateur', child: Text('Amateur')),
                                   DropdownMenuItem(
-                                      value: 'Club1', child: Text('Club 1')),
+                                      value: 'Club1', child: Text('Club1')),
                                   DropdownMenuItem(
-                                      value: 'Club2', child: Text('Club 2')),
+                                      value: 'Club2', child: Text('Club2')),
                                   DropdownMenuItem(
-                                      value: 'Club3', child: Text('Club 3')),
+                                      value: 'Club3', child: Text('Club3')),
                                   DropdownMenuItem(
-                                      value: 'Club4', child: Text('Club 4')),
+                                      value: 'Club4', child: Text('Club4')),
                                 ],
                               ),
                               Padding(
@@ -481,9 +517,9 @@ class _UserProfilState extends State<UserProfil> {
                       )))
                 ]))
           : Center(
-            child: Column(
+              child: Column(
                 //on click go back to main page
-              mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text('You are not connected'),
                   ElevatedButton(
@@ -494,8 +530,7 @@ class _UserProfilState extends State<UserProfil> {
                   ),
                 ],
               ),
-          ),
-
+            ),
     );
   }
 }
