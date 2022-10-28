@@ -32,7 +32,7 @@ class _UserProfilState extends State<UserProfil> {
   bool isCompleted = false;
   List myProfil = [];
   bool isConnected = false;
-  List leagueList = [];
+  var _selectedLeague = 'default';
 
   Future<bool> isLogged() async {
     var isLogged = await SessionManager().get('isLogged');
@@ -157,7 +157,6 @@ class _UserProfilState extends State<UserProfil> {
         isCompleted = true;
       });
     }
-    print('ok');
     showDialog(
         context: context,
         builder: (context) {
@@ -302,12 +301,20 @@ class _UserProfilState extends State<UserProfil> {
         ages: user['ages'],
         ffe: user['ffe'],
         photoUrl: user['photo'],
+        league: user['league'],
       );
       setState(() {
         myProfil.add(me);
         defineControllerUser();
       });
     }
+  }
+
+  void defineUserLeague() async {
+    var idUser = await SessionManager().get('id');
+    var id = mongo.ObjectId.fromHexString(idUser);
+    var update = await widget.db.collection('users').update(
+        mongo.where.eq('_id', id), mongo.modify.set('league', _selectedLeague));
   }
 
   void defineControllerUser() {
@@ -318,10 +325,10 @@ class _UserProfilState extends State<UserProfil> {
     _phoneNumber.text = myProfil[0].phone ?? '';
     _ffeField.text = myProfil[0].ffe ?? '';
     _photoUrl.text = myProfil[0].photoUrl ?? '';
+    _selectedLeague = myProfil[0].league ?? _selectedLeague;
   }
 
   void updateToDatabase() async {
-    // update users info to mongodb
     var idUser = await SessionManager().get('id');
     var id = mongo.ObjectId.fromHexString(idUser);
     var update = await widget.db.collection('users').update(
@@ -344,6 +351,7 @@ class _UserProfilState extends State<UserProfil> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+<<<<<<< Updated upstream
                     const SizedBox(height: 80.0),
                     Container(
                       child: GestureDetector(
@@ -351,13 +359,24 @@ class _UserProfilState extends State<UserProfil> {
                           changeValue(_photoUrl, _photoUrl);
                         },
                         child: _photoUrl != ''
+=======
+                  GestureDetector(
+                    onTap: () {
+                      changeValue(_photoUrl, _photoUrl);
+                    },
+                    child: _photoUrl != ''
+>>>>>>> Stashed changes
                         ? CircleAvatar(
                             radius: 90,
                             backgroundImage: NetworkImage(_photoUrl.text),
                           )
                         : const Icon(Icons.person),
+<<<<<<< Updated upstream
                   )),
                   const SizedBox(height: 50.0),
+=======
+                  ),
+>>>>>>> Stashed changes
                   GestureDetector(
                     onTap: () async {
                       changeValue(_nameField, _nameField);
@@ -403,6 +422,40 @@ class _UserProfilState extends State<UserProfil> {
                                     )),
                                   ),
                                 ),
+                              ),
+                              DropdownButtonFormField<String>(
+                                // value: _selectedLeague,
+                                validator: (value) {
+                                  if (value == '' ||
+                                      value == null ||
+                                      value == 'default') {
+                                    return 'Please select a value';
+                                  }
+                                  return null;
+                                },
+                                onChanged: (String? value) {
+                                  setState(() {
+                                    _selectedLeague = value!;
+                                    print(_selectedLeague);
+                                    defineUserLeague();
+                                  });
+                                },
+                                items: const <DropdownMenuItem<String>>[
+                                  DropdownMenuItem<String>(
+                                    value: 'default',
+                                    child: Text('Select your league'),
+                                  ),
+                                  DropdownMenuItem(
+                                      value: 'Amateur', child: Text('Amateur')),
+                                  DropdownMenuItem(
+                                      value: 'Club 1', child: Text('Club1')),
+                                  DropdownMenuItem(
+                                      value: 'Club 2', child: Text('Club2')),
+                                  DropdownMenuItem(
+                                      value: 'Club 3', child: Text('Club3')),
+                                  DropdownMenuItem(
+                                      value: 'Club 4', child: Text('Club4')),
+                                ],
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(10),
