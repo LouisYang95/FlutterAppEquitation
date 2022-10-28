@@ -60,22 +60,20 @@ class _MyAdminState extends State<AdminPage> {
     var userLessons;
     var data = await getAllLessons();
     var id = await SessionManager().get('id');
-    mongo.ObjectId mongodbid = mongo.ObjectId.parse(id);
+    var mongodbid = mongo.ObjectId.parse(id);
     for (var i = 0; i < data.length; i++) {
-      var userLessons =
-          await widget.db.collection('lessons_participations').find({
+      userL.add(await widget.db.collection('lessons_participations').find({
         'user_id': mongodbid,
         'lesson_id': await data[i]['_id'],
-      }).toList();
-      userL.add(userLessons);
+      }).toList());
     }
 
     for (var i = 0; i < userL.length; i++) {
-      var idL = await userL[i][i]["lesson_id"]; /* ... */
       userLessons = await widget.db
           .collection('lessons')
-          .find({'_id':  idL});
+          .find({'_id': userL[i][0]["lesson_id"]});
     }
+    print(userLessons);
     return userLessons;
   }
 
@@ -599,6 +597,7 @@ class _MyAdminState extends State<AdminPage> {
                   future: getLessonsUser(),
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     if (snapshot.hasData) {
+                      print(snapshot.data);
                       return ListView.builder(
                         itemCount: snapshot.data.length,
                         itemBuilder: (BuildContext context, int index) {
