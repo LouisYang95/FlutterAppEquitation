@@ -55,9 +55,9 @@ class _MyAdminState extends State<AdminPage> {
     return owners;
   }
 
-  getLessonsUser() async {
+  Future<List>getLessonsUser() async {
     List userL = [];
-    var userLessons;
+    List re = [];
     var data = await getAllLessons();
     var id = await SessionManager().get('id');
     var mongodbid = mongo.ObjectId.parse(id);
@@ -69,12 +69,13 @@ class _MyAdminState extends State<AdminPage> {
     }
 
     for (var i = 0; i < userL.length; i++) {
-      userLessons = await widget.db
+      var userLessons = await widget.db
           .collection('lessons')
-          .find({'_id': userL[i][0]["lesson_id"]});
+          .find({'_id': userL[i][0]["lesson_id"]}).toList();
+      re.add(userLessons);
     }
-    print(userLessons);
-    return userLessons;
+    print(re);
+    return re; 
   }
 
   deleteUserButton(snapshot) async {
@@ -596,8 +597,7 @@ class _MyAdminState extends State<AdminPage> {
                 FutureBuilder(
                   future: getLessonsUser(),
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    if (snapshot.hasData) {
-                      print(snapshot.data);
+                    if (snapshot.connectionState == ConnectionState.done) {
                       return ListView.builder(
                         itemCount: snapshot.data.length,
                         itemBuilder: (BuildContext context, int index) {
